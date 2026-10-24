@@ -1,6 +1,7 @@
 {
   "name": "threex",
   "private": true,
+  "license": "MIT",
   "description": "Find the best fishing spots near you, scored with the 3X framework (Comfort, Safety, Food).",
   "type": "module",
   "workspaces": [

@@ -2,6 +2,7 @@
 name = "threex-pipeline"
 version = "0.1.0"
 description = "Compiles public geodata, tide predictions and habitat layers into ThreeX's static spot catalogue."
+license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
   "pydantic>=2.9",

@@ -2,6 +2,7 @@
   "name": "@threex/core",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "description": "ThreeX data contract types and the 3X scoring engine. Pure TypeScript, no DOM.",
   "type": "module",
   "exports": {
