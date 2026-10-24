@@ -34,7 +34,20 @@ npm run format:check                   # Prettier (npm run format to fix)
 npm run typecheck
 npm test
 NODE_USE_ENV_PROXY=1 npm run demo -w @threex/core   # score a real build with live weather
+
+# Web app (apps/web)
+npm run dev -w @threex/web             # http://127.0.0.1:5173, gallery at /gallery
+npm run build -w @threex/web           # production PWA → apps/web/dist
+npm run preview -w @threex/web         # serve dist at http://127.0.0.1:4173 (service worker on)
+npm run screenshots -w @threex/web     # iPhone/iPad × every mode → apps/web/screenshots/
 ```
+
+### Running the web app locally
+
+- **Data.** In dev and preview the app reads the catalogue from `/data`, which serves `pipeline/build` (run the Kochi build first), or the three-spot fixture catalogue when there is no build. A production build reads `https://threex-data.pages.dev`; set `VITE_DATA_URL` at build time to point it elsewhere. For example, `VITE_DATA_URL=/data npm run build -w @threex/web` then `preview` tests the production build against a local catalogue.
+- **Weather** comes straight from Open-Meteo in the browser, one request per 0.05° cell of spot coordinates.
+- **Scoring** runs in a Web Worker (`src/workers/score.worker.ts`) using `@threex/core`.
+- **Cloud sessions:** Chromium and Playwright are preinstalled; never run `playwright install`. The screenshot script picks up the session's proxy from `HTTPS_PROXY`.
 
 ## Changing the data contract
 
@@ -54,10 +67,12 @@ In the session title bar, open the environment menu → **Edit**.
 
 ### Cloudflare Pages (free)
 1. Create a Pages project **`threex`** connected to this GitHub repo.
-   - Build command: `npm ci && npm run build -w apps/web`
-   - Output directory: `apps/web/dist`
+   - Framework preset: *None*
+   - Build command: `npm ci && npm run build -w @threex/web`
+   - Build output directory: `apps/web/dist`
+   - Environment variable: `NODE_VERSION` = `22`
 
-   Every branch and PR gets a preview URL; `main` deploys to `threex.pages.dev`. *(Needed from M3, once the web app exists.)*
+   Every branch and PR gets a preview URL; `main` deploys to `threex.pages.dev`. The app reads its data from `threex-data.pages.dev`, so it shows "Couldn't load spots" until step 2's first deploy.
 2. Create a Pages project **`threex-data`** for direct upload. The weekly `compile-data` workflow deploys the catalogue to it (with `pipeline/publish/_headers` for CORS and caching). Until the secrets below exist, the workflow still builds and uploads the catalogue as a run artifact.
 3. Create an API token with *Cloudflare Pages: Edit*. Add it, and your account ID, as GitHub Actions secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 

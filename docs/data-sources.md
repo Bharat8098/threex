@@ -25,7 +25,7 @@ ThreeX is open source and uses only open data. This file lists every source, why
 | Source | Used for | Licence | Notes |
 |---|---|---|---|
 | **Open-Meteo Forecast** | wind, cloud cover, surface pressure, air temperature, sunrise/sunset | CC BY 4.0 | **The free tier is non-commercial only** (under 10,000 calls a day). A free app with no ads fits. If ThreeX is ever monetised, switch to Open-Meteo's paid API key; the base URL and key are config values |
-| **Open-Meteo Marine** | sea-surface temperature, waves, ocean currents | CC BY 4.0 | marine cells near the coast only; inland points return nothing |
+| **Open-Meteo Marine** | sea-surface temperature, waves, ocean currents | CC BY 4.0 | marine cells only: an inland request is answered from the nearest sea cell (a point in Kochi's backwaters gets values from just off the coast) |
 | **Open-Meteo Flood** (GloFAS) | river discharge for freshwater spots | CC BY 4.0 | daily resolution |
 | **OpenFreeMap** | basemap vector tiles | OSM-based (ODbL) | no key; attribution shown on the map |
 

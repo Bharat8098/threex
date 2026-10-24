@@ -1,0 +1,78 @@
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: calc(var(--safe-top) + var(--space-4)) var(--space-4)
+    calc(var(--safe-bottom) + var(--space-8));
+  display: grid;
+  gap: var(--space-6);
+}
+
+.page h1,
+.page h2 {
+  margin: 0 0 var(--space-3);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: var(--space-3);
+}
+
+.swatch {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.fill {
+  display: grid;
+  place-items: center;
+  height: 56px;
+  border-radius: var(--radius-m);
+  font: var(--text-title3);
+}
+
+.type {
+  margin: 0 0 var(--space-1);
+}
+
+/* A busy, colourful backdrop so the glass blur is visible without network tiles. */
+.backdrop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 150px;
+  padding: var(--space-4);
+  border-radius: var(--radius-l);
+  background:
+    repeating-linear-gradient(115deg, var(--sys-cyan) 0 18px, transparent 18px 40px),
+    repeating-linear-gradient(25deg, var(--sys-green) 0 10px, transparent 10px 34px),
+    var(--bg-secondary);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.rating {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+}
+
+.card {
+  padding: var(--space-4);
+  border-radius: var(--radius-l);
+  background: var(--bg-elevated);
+}

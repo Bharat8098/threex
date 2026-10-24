@@ -2,7 +2,7 @@
 
 ThreeX is a web app that should feel like a premium iOS app. It follows Apple's Human Interface Guidelines in spirit: system typography, system colours, a glass control layer, and spring motion. It is **outdoor-first**: light mode is designed and tested before dark mode, because anglers use it in direct sun.
 
-All tokens live in `apps/web/src/design/`. Components never hard-code colours, font sizes, radii or easing.
+All tokens live in `apps/web/src/design/` (`tokens.css`, `glass.css`, `motion.ts`). Components never hard-code colours, font sizes, radii or easing. The gallery at **`/gallery`** shows every token and component in the current appearance.
 
 ---
 
@@ -12,15 +12,17 @@ Values are Apple's published iOS system colours (HIG, iOS 26) as CSS custom prop
 
 ### Roles
 
-| Token | System colour | Role |
+Each role comes as a `-fill` and an `-ink` token (see *The outdoor contrast rule* below).
+
+| Tokens | System colour | Role |
 |---|---|---|
-| `--accent` | Teal | tint for primary actions, selection, links |
-| `--pillar-comfort` | Cyan | Comfort chip, icon, chart series |
-| `--pillar-safety` | Indigo | Safety chip, icon, chart series |
-| `--pillar-food` | Orange | Food chip, icon, chart series |
-| `--rating-3x` | Green | Recommended badge and map pin |
-| `--rating-2x` | Yellow | Worth-a-look badge and map pin |
-| `--rating-low` | Gray | 0–1X, muted |
+| `--accent-fill`, `--accent-ink` | Teal | tint for primary actions, selection, links |
+| `--comfort-fill`, `--comfort-ink` | Cyan | Comfort mark, chart series |
+| `--safety-fill`, `--safety-ink` | Indigo | Safety mark, chart series |
+| `--food-fill`, `--food-ink` | Orange | Food mark, chart series |
+| `--rating-3x-fill`, `--rating-3x-ink` | Green | Recommended badge and map pin |
+| `--rating-2x-fill`, `--rating-2x-ink` | Yellow | Worth-a-look badge and map pin |
+| `--rating-low-fill`, `--rating-low-ink` | Gray | 0–1X, muted |
 
 ### Values (R, G, B)
 
@@ -51,7 +53,7 @@ So every role has two forms:
 - **`-fill`**: the default tint, used as a **background**, with **label-coloured (black) text** on top. This is used for badges, pins and chips.
 - **`-ink`**: the **Increased-Contrast tint in light mode** (the default tint in dark mode), used for **text, icons and thin strokes** on plain backgrounds.
 
-**Never put white text on a light-mode tint fill** (about 2:1). Colour is never the only signal: every rating also shows its X count and a text label.
+**Never put white text on a light-mode tint fill** (about 2:1). Text on a fill uses `--on-fill`, which is black. Under Increase Contrast in light mode, the fills switch to the IC values, which are dark enough for white text, so `--on-fill` turns white there. Colour is never the only signal: every rating also shows its X count and a text label.
 
 ---
 
@@ -88,6 +90,12 @@ SF Symbols' licence does not allow use on the web. We use **Phosphor** (MIT), wh
 | Tide | `ArrowsDownUp` (rising/falling variants) |
 | Light | `SunHorizon`, `Moon` |
 | Wind | `Wind` |
+| Locate me | `Crosshair` (bold once located) |
+| Appearance: system / light / dark | `CircleHalf`, `Sun`, `Moon` |
+| Offline | `CloudSlash` |
+| Share (in the install hint) | `Export` |
+
+A pillar mark is **filled** in the pillar's ink colour when the X is earned, a tertiary outline when it is missed, and dashed when the pillar is unknown (no data).
 
 ---
 
@@ -131,19 +139,31 @@ Motion uses the `motion` library with named springs that mirror SwiftUI. Only `t
 
 ## Layout
 
-- **iPhone:** a full-bleed map with floating glass controls and a draggable bottom sheet.
-- **iPad and desktop (≥ 768 px wide):** a sidebar list, the map, and an inspector panel, driven by container queries.
+- **iPhone:** a full-bleed map with floating glass controls and a draggable bottom sheet. The sheet's peek detent is set in `rem`, so it grows with the text size.
+- **iPad and desktop (≥ 768 px wide):** a fixed list panel beside the map. An inspector panel for spot detail arrives in M4.
+- **Text:** names and times wrap rather than truncate; a number and its unit never split ("3.9 km" uses a non-breaking space).
 - Uses `viewport-fit=cover` with `env(safe-area-inset-*)`.
 - Minimum tap target is 44 × 44 px.
 - Corner radii follow concentric shapes: inner radius = outer radius − padding.
 
+## Map
+
+- **Basemap:** OpenFreeMap's Positron (light) and Dark styles, switched with the appearance. Administrative boundary layers are removed: they add nothing at fishing zoom levels, and India requires official boundaries on any map that shows them.
+- **Pins:** MapLibre needs concrete colours, so `color()` in `motion.ts` resolves the rating tokens at runtime. Better ratings draw on top. Pins still being scored are faded, and the "3X" labels appear from zoom 13.
+- **Credits:** the compact attribution (i) control stays visible at the top right, under the glass controls. Nothing may cover it, including the offline banner.
+
+## Appearance
+
+The app follows the system appearance unless the user picks light or dark with the appearance button. That choice is the only preference stored (`localStorage`, key `threex-appearance`).
+
 ## Verification for every UI change
 
-Take Playwright screenshots at iPhone and iPad sizes in each of these modes:
+`npm run screenshots -w @threex/web` (with `npm run dev -w @threex/web` running) writes Playwright screenshots of the app and `/gallery` to `apps/web/screenshots/`. It covers iPhone (393 × 852) and iPad (820 × 1180) in each of these modes:
 - light
 - dark
-- `prefers-contrast: more`
-- `prefers-reduced-motion`
-- the largest text size
+- Increase Contrast (`prefers-contrast: more`)
+- Reduce Motion (`prefers-reduced-motion`)
+- the largest standard text size (body at 23 pt)
+- offline (app only)
 
-Then check the PR preview URL on a real iPhone, outdoors when possible.
+`ONLY=app-iphone-light,ipad-dark` limits the run. The script waits for scoring to finish and warns about pages that scroll sideways. Look at every image, then check the PR preview URL on a real iPhone, outdoors when possible.

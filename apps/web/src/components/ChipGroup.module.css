@@ -1,0 +1,40 @@
+/* Scrolls sideways rather than overflowing the screen at large text sizes. */
+.group {
+  display: inline-flex;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+}
+
+.chip {
+  position: relative;
+  min-height: 38px;
+  flex: none;
+  min-width: var(--tap);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font: var(--text-subheadline);
+  font-weight: 600;
+  color: var(--label);
+  cursor: pointer;
+}
+
+.selection {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--accent-fill);
+}
+
+.label {
+  position: relative;
+  white-space: nowrap;
+}
+
+.chip[aria-checked="true"] .label {
+  color: var(--on-fill);
+}

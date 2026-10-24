@@ -1,0 +1,34 @@
+.map {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-secondary);
+}
+
+/* Under the floating control group. */
+.map :global(.maplibregl-ctrl-top-right) {
+  top: calc(var(--safe-top) + 112px);
+  right: calc(var(--safe-right) + 6px);
+}
+
+.you {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-fill);
+  border: 3px solid var(--bg-elevated);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent-fill) 25%, transparent);
+}
+
+/* The compact attribution (i) button follows the appearance. */
+.map :global(.maplibregl-ctrl-attrib.maplibregl-compact) {
+  background: var(--bg-elevated);
+  color: var(--label);
+}
+
+.map :global(.maplibregl-ctrl-attrib a) {
+  color: var(--label-secondary);
+}
+
+.map[data-scheme="dark"] :global(.maplibregl-ctrl-attrib-button) {
+  filter: invert(1);
+}

@@ -7,3 +7,5 @@ packages/core/test/data/
 *.md
 *.json
 !package.json
+apps/web/dist/
+apps/web/dev-dist/

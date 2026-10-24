@@ -1,0 +1,137 @@
+/*
+ * ThreeX design tokens. Values are Apple's iOS system colours (HIG, iOS 26); see
+ * docs/design-system.md. Components use role tokens only, never raw colours.
+ *
+ *   -fill  a tint used as a background, with --on-fill text on top
+ *   -ink   a tint used for text, icons and thin strokes on plain backgrounds; in light mode
+ *          it is the Increased Contrast variant so it stays legible in sunlight
+ */
+:root {
+  color-scheme: light dark;
+
+  /* System palette: light, dark */
+  --sys-teal: light-dark(rgb(0 195 208), rgb(0 210 224));
+  --sys-teal-ink: light-dark(rgb(0 129 152), rgb(0 210 224));
+  --sys-cyan: light-dark(rgb(0 192 232), rgb(60 211 254));
+  --sys-cyan-ink: light-dark(rgb(0 126 174), rgb(60 211 254));
+  --sys-indigo: light-dark(rgb(97 85 245), rgb(109 124 255));
+  --sys-indigo-ink: light-dark(rgb(86 74 222), rgb(109 124 255));
+  --sys-orange: light-dark(rgb(255 141 40), rgb(255 146 48));
+  --sys-orange-ink: light-dark(rgb(197 83 0), rgb(255 146 48));
+  --sys-green: light-dark(rgb(52 199 89), rgb(48 209 88));
+  --sys-green-ink: light-dark(rgb(0 137 50), rgb(48 209 88));
+  --sys-yellow: light-dark(rgb(255 204 0), rgb(255 214 0));
+  --sys-yellow-ink: light-dark(rgb(161 106 0), rgb(255 214 0));
+  --sys-red: light-dark(rgb(255 56 60), rgb(255 66 69));
+  --sys-red-ink: light-dark(rgb(233 21 45), rgb(255 66 69));
+  --sys-gray: rgb(142 142 147);
+
+  /* Neutrals (iOS semantic colours) */
+  --label: light-dark(rgb(0 0 0), rgb(255 255 255));
+  --label-secondary: light-dark(rgb(60 60 67 / 0.6), rgb(235 235 245 / 0.6));
+  --label-tertiary: light-dark(rgb(60 60 67 / 0.3), rgb(235 235 245 / 0.3));
+  --bg: light-dark(rgb(255 255 255), rgb(0 0 0));
+  --bg-grouped: light-dark(rgb(242 242 247), rgb(0 0 0));
+  --bg-secondary: light-dark(rgb(242 242 247), rgb(28 28 30));
+  --bg-elevated: light-dark(rgb(255 255 255), rgb(28 28 30));
+  --fill-tertiary: light-dark(rgb(118 118 128 / 0.12), rgb(118 118 128 / 0.24));
+  --separator: light-dark(rgb(60 60 67 / 0.29), rgb(84 84 88 / 0.6));
+  --on-fill: rgb(0 0 0);
+  --on-fill-strong: rgb(255 255 255);
+
+  /* Roles */
+  --accent-fill: var(--sys-teal);
+  --accent-ink: var(--sys-teal-ink);
+  --comfort-fill: var(--sys-cyan);
+  --comfort-ink: var(--sys-cyan-ink);
+  --safety-fill: var(--sys-indigo);
+  --safety-ink: var(--sys-indigo-ink);
+  --food-fill: var(--sys-orange);
+  --food-ink: var(--sys-orange-ink);
+  --rating-3x-fill: var(--sys-green);
+  --rating-3x-ink: var(--sys-green-ink);
+  --rating-2x-fill: var(--sys-yellow);
+  --rating-2x-ink: var(--sys-yellow-ink);
+  --rating-low-fill: var(--fill-tertiary);
+  --rating-low-ink: var(--label-secondary);
+  --danger-ink: var(--sys-red-ink);
+
+  /* Glass (control layer only) */
+  --glass-fill: light-dark(rgb(255 255 255 / 0.74), rgb(30 30 32 / 0.62));
+  --glass-border: light-dark(rgb(255 255 255 / 0.65), rgb(255 255 255 / 0.14));
+  --glass-highlight: light-dark(rgb(255 255 255 / 0.85), rgb(255 255 255 / 0.12));
+  --glass-blur: blur(24px) saturate(180%);
+  --shadow-float: 0 1px 2px rgb(0 0 0 / 0.08), 0 8px 28px rgb(0 0 0 / 0.14);
+
+  /* Type (rem follows the iOS Text Size setting; see base.css) */
+  --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-rounded: ui-rounded, "SF Pro Rounded", var(--font);
+  --text-large-title: 700 calc(34rem / 17) / calc(41 / 34) var(--font);
+  --text-title1: 700 calc(28rem / 17) / calc(34 / 28) var(--font);
+  --text-title2: 700 calc(22rem / 17) / calc(28 / 22) var(--font);
+  --text-title3: 600 calc(20rem / 17) / calc(25 / 20) var(--font);
+  --text-headline: 600 1rem / calc(22 / 17) var(--font);
+  --text-body: 400 1rem / calc(22 / 17) var(--font);
+  --text-callout: 400 calc(16rem / 17) / calc(21 / 16) var(--font);
+  --text-subheadline: 400 calc(15rem / 17) / calc(20 / 15) var(--font);
+  --text-footnote: 400 calc(13rem / 17) / calc(18 / 13) var(--font);
+  --text-caption1: 400 calc(12rem / 17) / calc(16 / 12) var(--font);
+  --text-caption2: 400 calc(11rem / 17) / calc(13 / 11) var(--font);
+
+  /* Space and shape */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --radius-s: 10px;
+  --radius-m: 14px;
+  --radius-l: 22px;
+  --radius-xl: 30px;
+  --radius-pill: 999px;
+  --tap: 44px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --sys-teal: light-dark(rgb(0 129 152), rgb(59 221 236));
+    --sys-teal-ink: var(--sys-teal);
+    --sys-cyan: light-dark(rgb(0 126 174), rgb(109 217 255));
+    --sys-cyan-ink: var(--sys-cyan);
+    --sys-indigo: light-dark(rgb(86 74 222), rgb(167 170 255));
+    --sys-indigo-ink: var(--sys-indigo);
+    --sys-orange: light-dark(rgb(197 83 0), rgb(255 160 86));
+    --sys-orange-ink: var(--sys-orange);
+    --sys-green: light-dark(rgb(0 137 50), rgb(74 217 104));
+    --sys-green-ink: var(--sys-green);
+    --sys-yellow: light-dark(rgb(161 106 0), rgb(254 223 67));
+    --sys-yellow-ink: var(--sys-yellow);
+    --sys-red-ink: light-dark(rgb(233 21 45), rgb(255 97 101));
+    --label-secondary: light-dark(rgb(60 60 67 / 0.85), rgb(235 235 245 / 0.85));
+    --separator: light-dark(rgb(60 60 67 / 0.6), rgb(235 235 245 / 0.5));
+    /* Darker light-mode fills need white text. */
+    --on-fill: light-dark(rgb(255 255 255), rgb(0 0 0));
+    --glass-fill: var(--bg-elevated);
+    --glass-border: var(--separator);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-fill: var(--bg-elevated);
+    --glass-blur: none;
+  }
+}

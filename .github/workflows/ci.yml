@@ -48,3 +48,22 @@ jobs:
       - run: npm run format:check
       - run: npm run typecheck
       - run: npm test
+
+  web:
+    name: Web app (PWA build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Typecheck and unit tests run in the Core job (they cover every workspace).
+      - run: npm run build -w @threex/web
+      - name: Service worker and MapLibre worker are emitted
+        run: |
+          test -f apps/web/dist/sw.js
+          test -f apps/web/dist/manifest.webmanifest
+          ls apps/web/dist/assets/maplibre-gl-worker-*.mjs
+          grep -q maplibre-gl-worker apps/web/dist/sw.js
