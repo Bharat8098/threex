@@ -1,0 +1,9 @@
+node_modules/
+pipeline/
+schema/
+fixtures/
+packages/core/src/generated/
+packages/core/test/data/
+*.md
+*.json
+!package.json

@@ -12,7 +12,7 @@ A spot that earns all three X's is **Recommended**. A 2X spot can flip to 3X at 
 
 No accounts, no tracking, and your location never leaves your device. ThreeX ships as an installable web app for iPhone, iPad and everything else: in Safari, tap Share → Add to Home Screen.
 
-> **Status:** M1, the data pipeline. The Kochi pilot compiles 207 spots (coastal, estuary and freshwater) with 45-day tide predictions. Launch region: India.
+> **Status:** M2, the scoring engine. The Kochi pilot compiles 207 spots with 45-day tide predictions, and `@threex/core` scores them every 15 minutes against live weather: ratings, reasons, best windows and tide flips. Launch region: India.
 
 ## Repository
 
@@ -28,7 +28,7 @@ No accounts, no tracking, and your location never leaves your device. ThreeX shi
 | `schema/v1/` | JSON Schema for the published data (generated) |
 | `fixtures/v1/` | synthetic Kochi catalogue used by both test suites (generated) |
 | `config/scoring-config.json` | 3X thresholds and weights, published with the data |
-| `packages/core/` | `@threex/core`: contract types and, from M2, the scoring engine |
+| `packages/core/` | `@threex/core`: contract types and the 3X scoring engine (pure TypeScript) |
 | `apps/web/` | the PWA (from M3) |
 
 ## Quick start
@@ -42,7 +42,7 @@ npm ci && npm run typecheck && npm test
 
 1. **M0, foundations:** contract, docs, CI. ✅
 2. **M1, pipeline v0:** Kochi pilot spots, EOT20 tides validated against the Cochin gauge. ✅
-3. **M2, `@threex/core`:** the 3X scoring engine, tide-flip analysis and the window planner.
+3. **M2, `@threex/core`:** the 3X scoring engine, tide-flip analysis and the window planner. ✅
 4. **M3, app shell:** PWA, design system, map and offline cache.
 5. **M4, screens:** map, spot detail, best-times planner, about & data.
 6. **M5, expansion:** all of India.

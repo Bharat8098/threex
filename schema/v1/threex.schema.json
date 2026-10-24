@@ -318,6 +318,15 @@
     "PillarScoring": {
       "additionalProperties": false,
       "properties": {
+        "combine": {
+          "description": "How signal memberships combine: a weighted mean lets strengths offset weaknesses; a weighted geometric mean lets the weakest factor limit the pillar.",
+          "enum": [
+            "mean",
+            "geometric"
+          ],
+          "title": "Combine",
+          "type": "string"
+        },
         "threshold": {
           "description": "Score at or above which the pillar earns its X.",
           "maximum": 1,
@@ -345,6 +354,7 @@
         }
       },
       "required": [
+        "combine",
         "threshold",
         "minCoverage",
         "signals"
@@ -365,11 +375,19 @@
           "minimum": 0,
           "title": "Minwindowminutes",
           "type": "integer"
+        },
+        "stepMinutes": {
+          "description": "Time resolution of the engine: one evaluation per step.",
+          "maximum": 60,
+          "minimum": 5,
+          "title": "Stepminutes",
+          "type": "integer"
         }
       },
       "required": [
         "horizonHours",
-        "minWindowMinutes"
+        "minWindowMinutes",
+        "stepMinutes"
       ],
       "title": "PlannerScoring",
       "type": "object"
@@ -506,8 +524,7 @@
         "windSpeed",
         "waveHeight",
         "dischargeRatio",
-        "structureCover",
-        "vegetationCover",
+        "cover",
         "waterDepth",
         "nurseryHabitat",
         "chlorophyll",

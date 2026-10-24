@@ -30,8 +30,10 @@ uv run threex-compile validate <dir>   # check a published catalogue
 # TypeScript (Node 22+, npm workspaces)
 npm ci
 npm run gen:types                      # schema → packages/core/src/generated/contract.ts
+npm run format:check                   # Prettier (npm run format to fix)
 npm run typecheck
 npm test
+NODE_USE_ENV_PROXY=1 npm run demo -w @threex/core   # score a real build with live weather
 ```
 
 ## Changing the data contract

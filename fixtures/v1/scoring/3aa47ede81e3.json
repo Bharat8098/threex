@@ -1,23 +1,24 @@
 {
   "schemaVersion": 1,
-  "version": "0.1.0",
+  "version": "0.3.0",
   "waterTypes": {
     "coastal": {
       "comfort": {
+        "combine": "geometric",
         "threshold": 0.6,
         "minCoverage": 0.5,
         "signals": {
           "tidalFlow": {
             "weight": 2.0,
-            "idealMin": 0.15,
-            "idealMax": 0.7,
-            "falloff": 0.2
+            "idealMin": 0.0,
+            "idealMax": 30.0,
+            "falloff": 30.0
           },
           "currentSpeed": {
             "weight": 1.0,
-            "idealMin": 0.05,
-            "idealMax": 0.6,
-            "falloff": 0.3
+            "idealMin": 0.0,
+            "idealMax": 0.5,
+            "falloff": 0.4
           },
           "waterTempAnomaly": {
             "weight": 1.5,
@@ -46,20 +47,15 @@
         }
       },
       "safety": {
-        "threshold": 0.55,
+        "combine": "mean",
+        "threshold": 0.65,
         "minCoverage": 0.5,
         "signals": {
-          "structureCover": {
+          "cover": {
             "weight": 3.0,
-            "idealMin": 0.5,
+            "idealMin": 0.6,
             "idealMax": 1.0,
-            "falloff": 0.4
-          },
-          "vegetationCover": {
-            "weight": 1.0,
-            "idealMin": 0.4,
-            "idealMax": 1.0,
-            "falloff": 0.4
+            "falloff": 0.3
           },
           "waterDepth": {
             "weight": 1.5,
@@ -70,29 +66,30 @@
         }
       },
       "food": {
-        "threshold": 0.55,
+        "combine": "mean",
+        "threshold": 0.65,
         "minCoverage": 0.5,
         "signals": {
           "nurseryHabitat": {
-            "weight": 1.5,
+            "weight": 1.0,
             "idealMin": 0.4,
             "idealMax": 1.0,
             "falloff": 0.4
           },
           "chlorophyll": {
-            "weight": 1.0,
+            "weight": 0.5,
             "idealMin": 1.0,
             "idealMax": 10.0,
             "falloff": 0.8
           },
           "tideMovement": {
-            "weight": 2.0,
-            "idealMin": 0.6,
+            "weight": 2.5,
+            "idealMin": 0.7,
             "idealMax": 1.0,
-            "falloff": 0.5
+            "falloff": 0.4
           },
           "lowLightFeeding": {
-            "weight": 1.5,
+            "weight": 2.0,
             "idealMin": 0.6,
             "idealMax": 1.0,
             "falloff": 0.5
@@ -104,7 +101,7 @@
             "falloff": 1.5
           },
           "solunar": {
-            "weight": 0.5,
+            "weight": 1.0,
             "idealMin": 0.6,
             "idealMax": 1.0,
             "falloff": 0.5
@@ -114,20 +111,21 @@
     },
     "estuary": {
       "comfort": {
+        "combine": "geometric",
         "threshold": 0.6,
         "minCoverage": 0.5,
         "signals": {
           "tidalFlow": {
             "weight": 2.0,
-            "idealMin": 0.1,
-            "idealMax": 0.6,
-            "falloff": 0.25
+            "idealMin": 0.0,
+            "idealMax": 30.0,
+            "falloff": 30.0
           },
           "currentSpeed": {
             "weight": 1.0,
-            "idealMin": 0.05,
+            "idealMin": 0.0,
             "idealMax": 0.5,
-            "falloff": 0.3
+            "falloff": 0.4
           },
           "waterTempAnomaly": {
             "weight": 1.5,
@@ -150,23 +148,18 @@
         }
       },
       "safety": {
-        "threshold": 0.55,
+        "combine": "mean",
+        "threshold": 0.65,
         "minCoverage": 0.5,
         "signals": {
-          "structureCover": {
-            "weight": 2.0,
-            "idealMin": 0.4,
+          "cover": {
+            "weight": 3.0,
+            "idealMin": 0.6,
             "idealMax": 1.0,
-            "falloff": 0.4
-          },
-          "vegetationCover": {
-            "weight": 2.0,
-            "idealMin": 0.4,
-            "idealMax": 1.0,
-            "falloff": 0.4
+            "falloff": 0.3
           },
           "waterDepth": {
-            "weight": 1.5,
+            "weight": 1.0,
             "idealMin": 0.8,
             "idealMax": 8.0,
             "falloff": 0.6
@@ -174,11 +167,12 @@
         }
       },
       "food": {
-        "threshold": 0.55,
+        "combine": "mean",
+        "threshold": 0.65,
         "minCoverage": 0.5,
         "signals": {
           "nurseryHabitat": {
-            "weight": 2.0,
+            "weight": 1.0,
             "idealMin": 0.4,
             "idealMax": 1.0,
             "falloff": 0.4
@@ -190,13 +184,13 @@
             "falloff": 1.0
           },
           "tideMovement": {
-            "weight": 2.0,
-            "idealMin": 0.6,
+            "weight": 2.5,
+            "idealMin": 0.4,
             "idealMax": 1.0,
-            "falloff": 0.5
+            "falloff": 0.4
           },
           "lowLightFeeding": {
-            "weight": 1.5,
+            "weight": 2.0,
             "idealMin": 0.6,
             "idealMax": 1.0,
             "falloff": 0.5
@@ -208,7 +202,7 @@
             "falloff": 1.5
           },
           "solunar": {
-            "weight": 0.5,
+            "weight": 1.0,
             "idealMin": 0.6,
             "idealMax": 1.0,
             "falloff": 0.5
@@ -218,6 +212,7 @@
     },
     "freshwater": {
       "comfort": {
+        "combine": "geometric",
         "threshold": 0.6,
         "minCoverage": 0.5,
         "signals": {
@@ -242,20 +237,15 @@
         }
       },
       "safety": {
-        "threshold": 0.55,
+        "combine": "mean",
+        "threshold": 0.65,
         "minCoverage": 0.5,
         "signals": {
-          "structureCover": {
-            "weight": 2.0,
-            "idealMin": 0.4,
+          "cover": {
+            "weight": 3.0,
+            "idealMin": 0.5,
             "idealMax": 1.0,
-            "falloff": 0.4
-          },
-          "vegetationCover": {
-            "weight": 2.0,
-            "idealMin": 0.4,
-            "idealMax": 1.0,
-            "falloff": 0.4
+            "falloff": 0.3
           },
           "waterDepth": {
             "weight": 1.0,
@@ -266,7 +256,8 @@
         }
       },
       "food": {
-        "threshold": 0.55,
+        "combine": "mean",
+        "threshold": 0.65,
         "minCoverage": 0.5,
         "signals": {
           "nurseryHabitat": {
@@ -288,7 +279,7 @@
             "falloff": 1.5
           },
           "solunar": {
-            "weight": 0.5,
+            "weight": 1.0,
             "idealMin": 0.6,
             "idealMax": 1.0,
             "falloff": 0.5
@@ -324,6 +315,7 @@
   },
   "planner": {
     "horizonHours": 168,
-    "minWindowMinutes": 60
+    "minWindowMinutes": 60,
+    "stepMinutes": 15
   }
 }

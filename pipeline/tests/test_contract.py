@@ -72,8 +72,12 @@ def test_tidal_spots_need_a_tide_series_and_freshwater_spots_must_not_have_one()
 
 def test_pillars_reject_signals_from_other_pillars() -> None:
     band = Band(weight=1, ideal_min=0, ideal_max=1, falloff=0)
-    pillar = PillarScoring(threshold=0.5, min_coverage=0.5, signals={SignalId.LIGHT_LEVEL: band})
-    stray = PillarScoring(threshold=0.5, min_coverage=0.5, signals={SignalId.SOLUNAR: band})
+    pillar = PillarScoring(
+        combine="mean", threshold=0.5, min_coverage=0.5, signals={SignalId.LIGHT_LEVEL: band}
+    )
+    stray = PillarScoring(
+        combine="mean", threshold=0.5, min_coverage=0.5, signals={SignalId.SOLUNAR: band}
+    )
     with pytest.raises(ValidationError, match="comfort cannot use signals: solunar"):
         WaterTypeScoring(comfort=stray, safety=pillar, food=pillar)
 

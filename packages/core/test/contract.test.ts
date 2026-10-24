@@ -58,7 +58,9 @@ describe("fixture catalogue", () => {
 
   it("covers every water type", () => {
     const waterTypes = new Set(
-      tiles.flatMap(({ bytes }) => (JSON.parse(bytes.toString("utf8")) as Tile).spots.map((s) => s.waterType)),
+      tiles.flatMap(({ bytes }) =>
+        (JSON.parse(bytes.toString("utf8")) as Tile).spots.map((s) => s.waterType),
+      ),
     );
     expect([...waterTypes].sort()).toEqual(["coastal", "estuary", "freshwater"]);
   });
@@ -67,7 +69,10 @@ describe("fixture catalogue", () => {
     const bytes = readBytes(`fixtures/v1/${manifest.scoring.path}`);
     expect(createHash("sha256").update(bytes).digest("hex")).toBe(manifest.scoring.sha256);
     const published = validate<ScoringConfig>("ScoringConfig", JSON.parse(bytes.toString("utf8")));
-    const authored = validate<ScoringConfig>("ScoringConfig", readJson("config/scoring-config.json"));
+    const authored = validate<ScoringConfig>(
+      "ScoringConfig",
+      readJson("config/scoring-config.json"),
+    );
     expect(published).toEqual(authored);
     expect(published.version).toBe(manifest.scoring.version);
   });

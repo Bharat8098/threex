@@ -22,9 +22,9 @@
     }
   ],
   "scoring": {
-    "path": "scoring/a331e4273905.json",
-    "sha256": "a331e4273905bfff5ef812a347c36b280b34446f4e1528d99b2a7ff041d4dcde",
-    "version": "0.1.0"
+    "path": "scoring/3aa47ede81e3.json",
+    "sha256": "3aa47ede81e3eb95f291fa99a224864b3462f892e812ceaf616b412e067b90fd",
+    "version": "0.3.0"
   },
   "attributions": [
     {
