@@ -30,12 +30,12 @@ ATTRIBUTIONS: dict[str, Attribution] = {
             display_required=False,
         ),
         Attribution(
-            id="gebco",
-            name="GEBCO gridded bathymetry",
-            license="GEBCO grid terms of use",
-            url="https://www.gebco.net/data_and_products/gridded_bathymetry_data/",
-            text="Bathymetry: GEBCO Compilation Group, GEBCO Grid",
-            display_required=True,
+            id="etopo2022",
+            name="ETOPO 2022 global relief model (NOAA NCEI)",
+            license="Public domain (U.S. Government work)",
+            url="https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+            text="Depth: NOAA NCEI ETOPO 2022",
+            display_required=False,
         ),
         Attribution(
             id="gmw",
@@ -58,8 +58,19 @@ ATTRIBUTIONS: dict[str, Attribution] = {
             name="NOAA CoastWatch ERDDAP",
             license="Public domain (U.S. Government work)",
             url="https://coastwatch.pfeg.noaa.gov/erddap/",
-            text="Sea temperature and chlorophyll: NOAA CoastWatch",
+            text=(
+                "Sea temperature (MUR, NASA JPL) and chlorophyll (MODIS Aqua, NASA) "
+                "via NOAA CoastWatch"
+            ),
             display_required=False,
+        ),
+        Attribution(
+            id="glofas",
+            name="GloFAS river discharge (Copernicus Emergency Management Service)",
+            license="CC-BY-4.0",
+            url="https://open-meteo.com/en/docs/flood-api",
+            text="River flow: Copernicus GloFAS via Open-Meteo (CC BY 4.0)",
+            display_required=True,
         ),
     ]
 }

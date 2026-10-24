@@ -12,7 +12,7 @@ A spot that earns all three X's is **Recommended**. A 2X spot can flip to 3X at 
 
 No accounts, no tracking, and your location never leaves your device. ThreeX ships as an installable web app for iPhone, iPad and everything else: in Safari, tap Share → Add to Home Screen.
 
-> **Status:** M0, foundations. Launch region: India, with a Kochi pilot covering coastal, estuary and freshwater spots.
+> **Status:** M1, the data pipeline. The Kochi pilot compiles 207 spots (coastal, estuary and freshwater) with 45-day tide predictions. Launch region: India.
 
 ## Repository
 
@@ -20,9 +20,11 @@ No accounts, no tracking, and your location never leaves your device. ThreeX shi
 |---|---|
 | [`docs/3x-framework.md`](docs/3x-framework.md) | the scoring model: source of truth |
 | [`docs/data-sources.md`](docs/data-sources.md) | every dataset, licence and credit line |
+| [`docs/pipeline.md`](docs/pipeline.md) | how open data becomes spots, facts and tide predictions |
 | [`docs/design-system.md`](docs/design-system.md) | colour, type, glass and motion rules |
 | [`docs/dev-workflow.md`](docs/dev-workflow.md) | how to build, test and set up services |
 | `pipeline/` | Python data compiler, run weekly in CI, publishing static JSON |
+| `config/regions/` | one file per region: area, OSM extract, tide gauges |
 | `schema/v1/` | JSON Schema for the published data (generated) |
 | `fixtures/v1/` | synthetic Kochi catalogue used by both test suites (generated) |
 | `config/scoring-config.json` | 3X thresholds and weights, published with the data |
@@ -39,7 +41,7 @@ npm ci && npm run typecheck && npm test
 ## Roadmap
 
 1. **M0, foundations:** contract, docs, CI. ✅
-2. **M1, pipeline v0:** Kochi pilot spots, EOT20 tides validated against the Cochin gauge.
+2. **M1, pipeline v0:** Kochi pilot spots, EOT20 tides validated against the Cochin gauge. ✅
 3. **M2, `@threex/core`:** the 3X scoring engine, tide-flip analysis and the window planner.
 4. **M3, app shell:** PWA, design system, map and offline cache.
 5. **M4, screens:** map, spot detail, best-times planner, about & data.

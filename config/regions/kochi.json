@@ -1,0 +1,16 @@
+{
+  "id": "in-kochi",
+  "name": "Kochi pilot",
+  "bbox": [76.12, 9.82, 76.42, 10.2],
+  "osmExtractUrl": "https://download.openstreetmap.fr/extracts/asia/india/kerala-latest.osm.pbf",
+  "gauges": [
+    {
+      "id": "uhslc-174",
+      "name": "Cochin (Willingdon Island)",
+      "uhslcId": 174,
+      "coordinate": { "lat": 9.967, "lon": 76.267 }
+    }
+  ],
+  "tidalRiverMaxInlandKm": 10,
+  "stationRadiusKm": 15
+}

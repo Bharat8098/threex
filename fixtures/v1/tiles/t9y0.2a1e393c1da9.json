@@ -30,13 +30,26 @@
         {
           "kind": "channelEdge",
           "distanceM": 120.0,
-          "source": "gebco"
+          "source": "etopo2022"
         }
       ],
       "habitat": {
         "mangroveM": 2500.0,
         "riverMouthM": 600.0,
-        "chlorophyllMgM3": 3.2,
+        "chlorophyllNormalMgM3": [
+          1.1,
+          0.9,
+          0.8,
+          0.8,
+          1.2,
+          3.5,
+          6.0,
+          7.2,
+          5.1,
+          2.4,
+          1.6,
+          1.3
+        ],
         "sstNormalC": [
           28.2,
           28.6,
@@ -57,7 +70,7 @@
       "sources": [
         "osm",
         "eot20",
-        "gebco",
+        "etopo2022",
         "gmw",
         "coastwatch"
       ]
@@ -84,7 +97,7 @@
         {
           "kind": "channelEdge",
           "distanceM": 90.0,
-          "source": "gebco"
+          "source": "etopo2022"
         },
         {
           "kind": "jetty",
@@ -95,7 +108,20 @@
       "habitat": {
         "mangroveM": 10.0,
         "riverMouthM": 2400.0,
-        "chlorophyllMgM3": 6.5,
+        "chlorophyllNormalMgM3": [
+          2.2,
+          1.8,
+          1.6,
+          1.6,
+          2.4,
+          7.0,
+          12.0,
+          14.4,
+          10.2,
+          4.8,
+          3.2,
+          2.6
+        ],
         "sstNormalC": [
           28.5,
           28.9,
@@ -116,7 +142,7 @@
       "sources": [
         "osm",
         "eot20",
-        "gebco",
+        "etopo2022",
         "gmw",
         "coastwatch"
       ]
@@ -221,17 +247,17 @@
           "heightCm": 23
         },
         {
-          "time": "2026-11-01T20:46:21.818182Z",
+          "time": "2026-11-01T20:46:00Z",
           "kind": "low",
           "heightCm": -26
         },
         {
-          "time": "2026-11-02T03:02:18.461538Z",
+          "time": "2026-11-02T03:02:00Z",
           "kind": "high",
           "heightCm": 62
         },
         {
-          "time": "2026-11-02T09:57:16.363636Z",
+          "time": "2026-11-02T09:57:00Z",
           "kind": "low",
           "heightCm": -60
         },
@@ -241,17 +267,17 @@
           "heightCm": 23
         },
         {
-          "time": "2026-11-02T21:16:40Z",
+          "time": "2026-11-02T21:17:00Z",
           "kind": "low",
           "heightCm": -25
         },
         {
-          "time": "2026-11-03T03:39:13.846154Z",
+          "time": "2026-11-03T03:39:00Z",
           "kind": "high",
           "heightCm": 63
         },
         {
-          "time": "2026-11-03T10:35:27.272727Z",
+          "time": "2026-11-03T10:35:00Z",
           "kind": "low",
           "heightCm": -61
         },

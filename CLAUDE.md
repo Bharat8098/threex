@@ -1,6 +1,6 @@
 # ThreeX: notes for Claude
 
-ThreeX is a PWA (iPhone-first, also iPad and desktop) that recommends fishing spots using the 3X framework: Comfort, Safety and Food. India is the launch region. Read `docs/3x-framework.md` before touching scoring, and `docs/design-system.md` before touching UI.
+ThreeX is a PWA (iPhone-first, also iPad and desktop) that recommends fishing spots using the 3X framework: Comfort, Safety and Food. India is the launch region. Read `docs/3x-framework.md` before touching scoring, `docs/pipeline.md` before touching the data compiler, and `docs/design-system.md` before touching UI.
 
 ## Architecture rules
 
@@ -16,6 +16,7 @@ ThreeX is a PWA (iPhone-first, also iPad and desktop) that recommends fishing sp
 - **The user's location never leaves the device.** Weather and marine requests use spot coordinates.
 - **Keep data credits visible** (`pipeline/src/compiler/attributions.py`, About & Data screen, map attribution).
 - **OSM physical features only.** Never use `leisure=fishing` or other crowdsourced catch data.
+- **After changing spot rules, rebuild Kochi and look.** Read `build/report/build-report.md`, and render `build/report/spots.geojson` on a map before saying a change works. Unit tests use synthetic data and stay offline.
 
 ## UI rules
 
@@ -33,6 +34,7 @@ ThreeX is a PWA (iPhone-first, also iPad and desktop) that recommends fishing sp
 ```sh
 cd pipeline && uv sync && uv run pytest && uv run ruff check . && uv run ruff format --check .
 cd pipeline && uv run threex-compile schema --check && uv run threex-compile fixtures --check
+cd pipeline && uv run threex-compile build --region kochi --out build   # real data; needs osmium-tool
 npm ci && npm run gen:types && npm run typecheck && npm test
 ```
 

@@ -39,6 +39,8 @@ _CONSTITUENTS = [(30, 12.4206, 1.2), (12, 12.0, 2.0), (18, 23.9345, 0.4), (9, 25
 
 # Arabian Sea off Kerala: warm most of the year, cooled by the June-September monsoon.
 _SST_NORMALS_C = [28.2, 28.6, 29.5, 30.3, 30.0, 28.4, 27.2, 26.9, 27.3, 28.1, 28.6, 28.4]
+# Monsoon upwelling lifts productivity from June to September.
+_CHLOROPHYLL_NORMALS = [1.1, 0.9, 0.8, 0.8, 1.2, 3.5, 6.0, 7.2, 5.1, 2.4, 1.6, 1.3]
 
 
 def _spot_id(lat: float, lon: float) -> str:
@@ -94,17 +96,17 @@ def _coastal_tile(tides: TideSeries) -> Tile:
             features=[
                 Feature(kind=FeatureKind.BREAKWATER, distance_m=15, source="osm"),
                 Feature(kind=FeatureKind.ROCKS, distance_m=40, source="osm"),
-                Feature(kind=FeatureKind.CHANNEL_EDGE, distance_m=120, source="gebco"),
+                Feature(kind=FeatureKind.CHANNEL_EDGE, distance_m=120, source="etopo2022"),
             ],
             habitat=Habitat(
                 mangrove_m=2500,
                 river_mouth_m=600,
-                chlorophyll_mg_m3=3.2,
+                chlorophyll_normal_mg_m3=_CHLOROPHYLL_NORMALS,
                 sst_normal_c=_SST_NORMALS_C,
             ),
             tide_cluster_id=tides.id,
             confidence=0.8,
-            sources=["osm", "eot20", "gebco", "gmw", "coastwatch"],
+            sources=["osm", "eot20", "etopo2022", "gmw", "coastwatch"],
         ),
         Spot(
             id=_spot_id(*mangroves),
@@ -119,18 +121,18 @@ def _coastal_tile(tides: TideSeries) -> Tile:
                 Feature(
                     kind=FeatureKind.MANGROVE_EDGE, distance_m=10, min_tide_cm=20, source="gmw"
                 ),
-                Feature(kind=FeatureKind.CHANNEL_EDGE, distance_m=90, source="gebco"),
+                Feature(kind=FeatureKind.CHANNEL_EDGE, distance_m=90, source="etopo2022"),
                 Feature(kind=FeatureKind.JETTY, distance_m=180, source="osm"),
             ],
             habitat=Habitat(
                 mangrove_m=10,
                 river_mouth_m=2400,
-                chlorophyll_mg_m3=6.5,
+                chlorophyll_normal_mg_m3=[round(c * 2, 2) for c in _CHLOROPHYLL_NORMALS],
                 sst_normal_c=[round(t + 0.3, 1) for t in _SST_NORMALS_C],
             ),
             tide_cluster_id=tides.id,
             confidence=0.6,
-            sources=["osm", "eot20", "gebco", "gmw", "coastwatch"],
+            sources=["osm", "eot20", "etopo2022", "gmw", "coastwatch"],
         ),
     ]
     return Tile(
@@ -157,7 +159,7 @@ def _freshwater_tile() -> Tile:
             Feature(kind=FeatureKind.BRIDGE_PILINGS, distance_m=60, source="osm"),
         ],
         habitat=Habitat(weed_bed_m=40),
-        river=River(discharge_median_m3s=220),
+        river=River(discharge_median_cumecs=220),
         confidence=0.5,
         sources=["osm"],
     )
@@ -173,7 +175,7 @@ def _freshwater_tile() -> Tile:
 
 def build_fixture_catalogue() -> Catalogue:
     tides = _kochi_mouth_tides()
-    used = ["osm", "eot20", "uhslc", "gebco", "gmw", "coastwatch"]
+    used = ["osm", "eot20", "uhslc", "etopo2022", "gmw", "coastwatch"]
     return Catalogue(
         data_version=DATA_VERSION,
         region=Region(id="in-kochi-fixture", name="Kochi pilot (synthetic fixture)"),
