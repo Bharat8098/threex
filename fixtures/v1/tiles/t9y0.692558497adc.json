@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "dataVersion": "fixture",
+  "geohash": "t9y0",
+  "generatedAt": "2026-10-31T18:00:00Z",
+  "spots": [
+    {
+      "id": "sp-t9y0wy7k",
+      "name": "Fort Kochi Breakwater",
+      "locality": "Fort Kochi, Ernakulam",
+      "coordinate": {
+        "lat": 9.9667,
+        "lon": 76.2386
+      },
+      "waterType": "coastal",
+      "accessDistanceM": 50.0,
+      "depthM": 4.5,
+      "depthSlope": 3.0,
+      "features": [
+        {
+          "kind": "breakwater",
+          "distanceM": 15.0,
+          "source": "osm"
+        },
+        {
+          "kind": "rocks",
+          "distanceM": 40.0,
+          "source": "osm"
+        },
+        {
+          "kind": "channelEdge",
+          "distanceM": 120.0,
+          "source": "gebco"
+        }
+      ],
+      "habitat": {
+        "mangroveM": 2500.0,
+        "riverMouthM": 600.0,
+        "chlorophyllMgM3": 3.2,
+        "sstNormalC": [
+          28.2,
+          28.6,
+          29.5,
+          30.3,
+          30.0,
+          28.4,
+          27.2,
+          26.9,
+          27.3,
+          28.1,
+          28.6,
+          28.4
+        ]
+      },
+      "tideClusterId": "tc-kochi-mouth",
+      "confidence": 0.8,
+      "sources": [
+        "osm",
+        "fes2022",
+        "gebco",
+        "gmw",
+        "coastwatch"
+      ]
+    },
+    {
+      "id": "sp-t9y0ydkq",
+      "name": "Vypin Mangrove Edge",
+      "locality": "Vypin, Ernakulam",
+      "coordinate": {
+        "lat": 9.989,
+        "lon": 76.229
+      },
+      "waterType": "estuary",
+      "accessDistanceM": 120.0,
+      "depthM": 1.8,
+      "depthSlope": 0.8,
+      "features": [
+        {
+          "kind": "mangroveEdge",
+          "distanceM": 10.0,
+          "minTideCm": 20,
+          "source": "gmw"
+        },
+        {
+          "kind": "channelEdge",
+          "distanceM": 90.0,
+          "source": "gebco"
+        },
+        {
+          "kind": "jetty",
+          "distanceM": 180.0,
+          "source": "osm"
+        }
+      ],
+      "habitat": {
+        "mangroveM": 10.0,
+        "riverMouthM": 2400.0,
+        "chlorophyllMgM3": 6.5,
+        "sstNormalC": [
+          28.5,
+          28.9,
+          29.8,
+          30.6,
+          30.3,
+          28.7,
+          27.5,
+          27.2,
+          27.6,
+          28.4,
+          28.9,
+          28.7
+        ]
+      },
+      "tideClusterId": "tc-kochi-mouth",
+      "confidence": 0.6,
+      "sources": [
+        "osm",
+        "fes2022",
+        "gebco",
+        "gmw",
+        "coastwatch"
+      ]
+    }
+  ],
+  "tides": [
+    {
+      "id": "tc-kochi-mouth",
+      "model": "synthetic",
+      "datum": "MSL",
+      "start": "2026-11-01T00:00:00Z",
+      "stepMinutes": 60,
+      "heightsCm": [
+        29,
+        47,
+        57,
+        57,
+        45,
+        24,
+        -2,
+        -27,
+        -46,
+        -56,
+        -54,
+        -43,
+        -25,
+        -4,
+        12,
+        22,
+        22,
+        14,
+        1,
+        -13,
+        -23,
+        -26,
+        -18,
+        -2,
+        19,
+        40,
+        55,
+        62,
+        56,
+        39,
+        14,
+        -13,
+        -38,
+        -55,
+        -60,
+        -54,
+        -39,
+        -18,
+        2,
+        17,
+        23,
+        20,
+        10,
+        -5,
+        -18,
+        -25,
+        -23,
+        -12,
+        7,
+        29,
+        48,
+        60,
+        62,
+        51,
+        30,
+        3,
+        -25,
+        -47,
+        -59,
+        -60,
+        -50,
+        -31,
+        -10,
+        8,
+        20,
+        23,
+        16,
+        4,
+        -10,
+        -20,
+        -24,
+        -18,
+        -4
+      ],
+      "events": [
+        {
+          "time": "2026-11-01T02:30:00Z",
+          "kind": "high",
+          "heightCm": 58
+        },
+        {
+          "time": "2026-11-01T09:20:00Z",
+          "kind": "low",
+          "heightCm": -57
+        },
+        {
+          "time": "2026-11-01T15:30:00Z",
+          "kind": "high",
+          "heightCm": 23
+        },
+        {
+          "time": "2026-11-01T20:46:21.818182Z",
+          "kind": "low",
+          "heightCm": -26
+        },
+        {
+          "time": "2026-11-02T03:02:18.461538Z",
+          "kind": "high",
+          "heightCm": 62
+        },
+        {
+          "time": "2026-11-02T09:57:16.363636Z",
+          "kind": "low",
+          "heightCm": -60
+        },
+        {
+          "time": "2026-11-02T16:10:00Z",
+          "kind": "high",
+          "heightCm": 23
+        },
+        {
+          "time": "2026-11-02T21:16:40Z",
+          "kind": "low",
+          "heightCm": -25
+        },
+        {
+          "time": "2026-11-03T03:39:13.846154Z",
+          "kind": "high",
+          "heightCm": 63
+        },
+        {
+          "time": "2026-11-03T10:35:27.272727Z",
+          "kind": "low",
+          "heightCm": -61
+        },
+        {
+          "time": "2026-11-03T16:48:00Z",
+          "kind": "high",
+          "heightCm": 23
+        },
+        {
+          "time": "2026-11-03T21:54:00Z",
+          "kind": "low",
+          "heightCm": -24
+        }
+      ],
+      "meanRangeCm": 84.4,
+      "confidence": 0.8,
+      "validation": {
+        "stationId": "uhslc-174",
+        "stationName": "Cochin (Willingdon Island)",
+        "rmseCm": 9.5,
+        "timingErrorMinutes": 14.0
+      }
+    }
+  ]
+}

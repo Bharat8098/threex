@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "dataVersion": "fixture",
+  "region": {
+    "id": "in-kochi-fixture",
+    "name": "Kochi pilot (synthetic fixture)"
+  },
+  "generatedAt": "2026-10-31T18:00:00Z",
+  "validUntil": "2026-11-04T00:00:00Z",
+  "tiles": [
+    {
+      "geohash": "t9y0",
+      "path": "tiles/t9y0.692558497adc.json",
+      "sha256": "692558497adce4f393ee5b7c34c1fe75404c82c3bcf27e8ec3d8bf7d1b4f1d10",
+      "spotCount": 2
+    },
+    {
+      "geohash": "t9y3",
+      "path": "tiles/t9y3.b18c3431b0d6.json",
+      "sha256": "b18c3431b0d69b2162e3545cd72205c2c37848bbc9763c7cb5ad0f8942490ec5",
+      "spotCount": 1
+    }
+  ],
+  "scoring": {
+    "path": "scoring/a331e4273905.json",
+    "sha256": "a331e4273905bfff5ef812a347c36b280b34446f4e1528d99b2a7ff041d4dcde",
+    "version": "0.1.0"
+  },
+  "attributions": [
+    {
+      "id": "osm",
+      "name": "OpenStreetMap",
+      "license": "ODbL-1.0",
+      "url": "https://www.openstreetmap.org/copyright",
+      "text": "© OpenStreetMap contributors",
+      "displayRequired": true
+    },
+    {
+      "id": "fes2022",
+      "name": "FES2022 global tide model",
+      "license": "AVISO FES licence",
+      "url": "https://www.aviso.altimetry.fr/en/data/products/auxiliary-products/global-tide-fes.html",
+      "text": "The FES2022 Tide product was funded by CNES, produced by LEGOS, NOVELTIS and CLS and made freely available by AVISO",
+      "displayRequired": true
+    },
+    {
+      "id": "uhslc",
+      "name": "University of Hawaii Sea Level Center",
+      "license": "UHSLC data policy (citation requested)",
+      "url": "https://uhslc.soest.hawaii.edu/",
+      "text": "Tide validation: University of Hawaii Sea Level Center",
+      "displayRequired": false
+    },
+    {
+      "id": "gebco",
+      "name": "GEBCO gridded bathymetry",
+      "license": "GEBCO grid terms of use",
+      "url": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/",
+      "text": "Bathymetry: GEBCO Compilation Group, GEBCO Grid",
+      "displayRequired": true
+    },
+    {
+      "id": "gmw",
+      "name": "Global Mangrove Watch",
+      "license": "CC-BY-4.0",
+      "url": "https://www.globalmangrovewatch.org/",
+      "text": "Mangrove extent: Global Mangrove Watch (CC BY 4.0)",
+      "displayRequired": true
+    },
+    {
+      "id": "coastwatch",
+      "name": "NOAA CoastWatch ERDDAP",
+      "license": "Public domain (U.S. Government work)",
+      "url": "https://coastwatch.pfeg.noaa.gov/erddap/",
+      "text": "Sea temperature and chlorophyll: NOAA CoastWatch",
+      "displayRequired": false
+    }
+  ]
+}

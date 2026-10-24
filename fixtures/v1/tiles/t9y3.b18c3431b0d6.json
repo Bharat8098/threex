@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "dataVersion": "fixture",
+  "geohash": "t9y3",
+  "generatedAt": "2026-10-31T18:00:00Z",
+  "spots": [
+    {
+      "id": "sp-t9y392j9",
+      "name": "Periyar at Aluva Manalpuram",
+      "locality": "Aluva, Ernakulam",
+      "coordinate": {
+        "lat": 10.1076,
+        "lon": 76.3516
+      },
+      "waterType": "freshwater",
+      "accessDistanceM": 80.0,
+      "features": [
+        {
+          "kind": "weedBed",
+          "distanceM": 40.0,
+          "source": "osm"
+        },
+        {
+          "kind": "bridgePilings",
+          "distanceM": 60.0,
+          "source": "osm"
+        }
+      ],
+      "habitat": {
+        "weedBedM": 40.0
+      },
+      "river": {
+        "dischargeMedianM3S": 220.0
+      },
+      "confidence": 0.5,
+      "sources": [
+        "osm"
+      ]
+    }
+  ],
+  "tides": []
+}
