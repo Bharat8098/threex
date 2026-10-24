@@ -30,7 +30,14 @@ class Grid:
         where=None,
     ) -> tuple[float, float] | None:
         """Value of the nearest cell that has data (and satisfies `where`, if given),
-        with its distance in metres; None if none lies within `max_distance_m`."""
+        with its distance in metres; None if none lies within `max_distance_m`.
+        Only the cells within reach are examined, so lookups stay fast on state-sized grids."""
+        near = self.window(lat, lon, max_distance_m)
+        if near.lats.size == 0 or near.lons.size == 0:
+            return None
+        return near._nearest_in(lat, lon, max_distance_m, where)
+
+    def _nearest_in(self, lat, lon, max_distance_m, where) -> tuple[float, float] | None:
         projection = LocalProjection(lat, lon)
         lon_grid, lat_grid = np.meshgrid(self.lons, self.lats)
         x, y = projection.to_xy(lon_grid, lat_grid)
@@ -47,6 +54,8 @@ class Grid:
         """The sub-grid within `radius_m` of a point (a square window)."""
         dlat = radius_m / 110_574.0
         dlon = radius_m / (111_320.0 * np.cos(np.radians(lat)))
-        i = (self.lats >= lat - dlat) & (self.lats <= lat + dlat)
-        j = (self.lons >= lon - dlon) & (self.lons <= lon + dlon)
-        return Grid(self.lats[i], self.lons[j], self.values[np.ix_(i, j)])
+        i0, i1 = np.searchsorted(self.lats, [lat - dlat, lat + dlat], side="left")
+        j0, j1 = np.searchsorted(self.lons, [lon - dlon, lon + dlon], side="left")
+        i1 += int(i1 < self.lats.size and self.lats[i1] == lat + dlat)
+        j1 += int(j1 < self.lons.size and self.lons[j1] == lon + dlon)
+        return Grid(self.lats[i0:i1], self.lons[j0:j1], self.values[i0:i1, j0:j1])

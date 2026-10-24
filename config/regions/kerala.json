@@ -1,0 +1,16 @@
+{
+  "id": "in-kl",
+  "name": "Kerala",
+  "bbox": [74.85, 8.17, 77.42, 12.8],
+  "osmExtractUrl": "https://download.openstreetmap.fr/extracts/asia/india/kerala-latest.osm.pbf",
+  "gauges": [
+    {
+      "id": "uhslc-174",
+      "name": "Cochin (Willingdon Island)",
+      "uhslcId": 174,
+      "coordinate": { "lat": 9.967, "lon": 76.267 }
+    }
+  ],
+  "tidalRiverMaxInlandKm": 10,
+  "stationRadiusKm": 15
+}

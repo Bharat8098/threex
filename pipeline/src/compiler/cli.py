@@ -2,6 +2,7 @@
 
 import filecmp
 import tempfile
+import time
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
@@ -102,10 +103,15 @@ def build(
     from compiler.report import write_geojson, write_report
     from compiler.sources.glofas import median_discharge
 
+    started = time.monotonic()
+
+    def log(message: str) -> None:
+        typer.echo(f"{time.monotonic() - started:7.1f}s {message}")
+
     config = load_region(region)
-    inputs = gather(config, log=typer.echo)
+    inputs = gather(config, log=log)
     catalogue, report = build_catalogue(
-        config, inputs, now=datetime.now(UTC), discharge=median_discharge, log=typer.echo
+        config, inputs, now=datetime.now(UTC), discharge=median_discharge, log=log
     )
     manifest = write_catalogue(catalogue, out)
     read_catalogue(out)  # re-validate what was written

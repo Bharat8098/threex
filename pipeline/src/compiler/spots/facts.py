@@ -39,9 +39,14 @@ class Facts:
     sources: set[str]
 
 
-def _nearest(items, point: Point, radius: float, kind: FeatureKind | None = None) -> float | None:
+def _nearest(
+    layers: Layers, layer: str, point: Point, radius: float, kind: FeatureKind
+) -> float | None:
+    """Distance to the nearest `kind` in a layer, if within `radius` (spatially indexed)."""
     distances = [
-        item.geometry.distance(point) for item in items if kind is None or item.kind is kind
+        item.geometry.distance(point)
+        for item in layers.within(layer, point, radius)
+        if item.kind is kind
     ]
     nearest = min(distances, default=None)
     return round(nearest) if nearest is not None and nearest <= radius else None
@@ -66,7 +71,7 @@ def nearby_features(candidate: Candidate, layers: Layers, mouths: list[Point]) -
     for patch in layers.within("vegetation", point, FEATURE_RADIUS_M):
         flood = MANGROVE_FLOOD_CM if patch.kind is FeatureKind.MANGROVE_EDGE else None
         offer(patch.kind, patch.geometry.boundary.distance(point), patch.source, flood)
-    for bridge, _, _ in layers.bridges:
+    for bridge, _, _ in layers.within("bridges", point, FEATURE_RADIUS_M):
         spans_water = (
             bridge.distance(point) <= FEATURE_RADIUS_M
             and bridge.length >= MIN_BRIDGE_SPAN_M
@@ -131,11 +136,11 @@ def spot_facts(
     mouth = min((m.distance(point) for m in mouths), default=None)
     habitat = Habitat(
         mangrove_m=_nearest(
-            layers.vegetation, point, HABITAT_RADIUS_M["mangrove"], FeatureKind.MANGROVE_EDGE
+            layers, "vegetation", point, HABITAT_RADIUS_M["mangrove"], FeatureKind.MANGROVE_EDGE
         ),
-        reef_m=_nearest(layers.structures, point, HABITAT_RADIUS_M["reef"], FeatureKind.REEF),
+        reef_m=_nearest(layers, "structures", point, HABITAT_RADIUS_M["reef"], FeatureKind.REEF),
         weed_bed_m=_nearest(
-            layers.vegetation, point, HABITAT_RADIUS_M["weed"], FeatureKind.WEED_BED
+            layers, "vegetation", point, HABITAT_RADIUS_M["weed"], FeatureKind.WEED_BED
         ),
         river_mouth_m=round(mouth)
         if mouth is not None and mouth <= HABITAT_RADIUS_M["mouth"]

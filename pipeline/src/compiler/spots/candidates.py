@@ -12,7 +12,7 @@
 
 import math
 import re
-from collections import Counter
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 
 import numpy as np
@@ -179,12 +179,36 @@ def _near_water(layers: Layers, point: Point, distance: float) -> bool:
     )
 
 
+class PointSet:
+    """Points bucketed into square cells, so "is any point within r?" checks only the
+    neighbouring cells instead of every point kept so far."""
+
+    def __init__(self, radius: float):
+        self.radius = radius
+        self._cells: dict[tuple[int, int], list[Point]] = defaultdict(list)
+
+    def _cell(self, point: Point) -> tuple[int, int]:
+        return int(point.x // self.radius), int(point.y // self.radius)
+
+    def near(self, point: Point) -> bool:
+        cx, cy = self._cell(point)
+        return any(
+            point.distance(other) < self.radius
+            for dx in (-1, 0, 1)
+            for dy in (-1, 0, 1)
+            for other in self._cells.get((cx + dx, cy + dy), ())
+        )
+
+    def add(self, point: Point) -> None:
+        self._cells[self._cell(point)].append(point)
+
+
 def edge_anchors(layers: Layers) -> list[Anchor]:
     """Points every 300 m along mangrove and reed edges that touch water, thinned so a long
     shoreline doesn't become dozens of spots."""
     anchors: list[Anchor] = []
     for kind, spacing in EDGE_THINNING_M.items():
-        kept: list[Point] = []
+        kept = PointSet(spacing)
         for patch in layers.vegetation:
             if patch.kind is not kind or patch.geometry.area < EDGE_MIN_AREA_M2:
                 continue
@@ -194,9 +218,9 @@ def edge_anchors(layers: Layers) -> list[Anchor]:
                 point = boundary.interpolate(k / steps, normalized=True)
                 if not _near_water(layers, point, NEAR_WATER_M):
                     continue
-                if any(point.distance(other) < spacing for other in kept):
+                if kept.near(point):
                     continue
-                kept.append(point)
+                kept.add(point)
                 anchors.append(Anchor(point, kind, patch.name, patch.source))
     return anchors
 
@@ -309,10 +333,12 @@ def build_candidates(layers: Layers, region: Region) -> tuple[list[Candidate], C
 
     accepted.sort(key=lambda a: (PRIORITY[a.kind], a.name is None))
     spots: list[Anchor] = []
+    taken = PointSet(CLUSTER_RADIUS_M)
     for anchor in accepted:
-        if any(anchor.point.distance(s.point) < CLUSTER_RADIUS_M for s in spots):
+        if taken.near(anchor.point):
             report.dropped["merged into a nearby spot"] += 1
             continue
+        taken.add(anchor.point)
         spots.append(anchor)
 
     candidates = []

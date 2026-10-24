@@ -16,12 +16,17 @@ BASE = "https://coastwatch.pfeg.noaa.gov/erddap/griddap"
 MARGIN_DEG = 0.1
 
 
-def _box(region: Region, *, lat_descending: bool = False) -> str:
+# MUR's 0.01° grid is far finer than a monthly normal needs: every 5th cell (~5 km) keeps
+# a state-sized request small, and spots look up the nearest cell within 15 km anyway.
+SST_STRIDE = 5
+
+
+def _box(region: Region, *, lat_descending: bool = False, stride: int = 1) -> str:
     """Axis constraints for the region plus a margin, in the dataset's latitude order."""
     min_lon, min_lat, max_lon, max_lat = region.bbox
     south, north = min_lat - MARGIN_DEG, max_lat + MARGIN_DEG
-    lat = f"[({north}):1:({south})]" if lat_descending else f"[({south}):1:({north})]"
-    lon = f"[({min_lon - MARGIN_DEG}):1:({max_lon + MARGIN_DEG})]"
+    lat = f"[({north}):{stride}:({south})]" if lat_descending else f"[({south}):{stride}:({north})]"
+    lon = f"[({min_lon - MARGIN_DEG}):{stride}:({max_lon + MARGIN_DEG})]"
     return lat + lon
 
 
@@ -34,8 +39,9 @@ def fetch_bathymetry(region: Region) -> Path:
 def fetch_sst_monthly(region: Region, first_year: int, last_year: int) -> Path:
     """MUR SST monthly means, used to build monthly normals."""
     time = f"[({first_year}-01-01T00:00:00Z):1:({last_year}-12-31T00:00:00Z)]"
-    url = f"{BASE}/jplMURSST41mday.csv?sst{time}{_box(region)}"
-    dest = cache_dir() / "erddap" / f"{region.id}-sst-{first_year}-{last_year}.csv"
+    url = f"{BASE}/jplMURSST41mday.csv?sst{time}{_box(region, stride=SST_STRIDE)}"
+    name = f"{region.id}-sst-{first_year}-{last_year}-s{SST_STRIDE}.csv"
+    dest = cache_dir() / "erddap" / name
     return download(url, dest)
 
 
