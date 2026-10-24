@@ -87,14 +87,3 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
-
-.more {
-  justify-self: start;
-  min-height: var(--tap);
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--accent-ink);
-  font-weight: 600;
-  cursor: pointer;
-}

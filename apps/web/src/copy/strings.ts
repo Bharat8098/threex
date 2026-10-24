@@ -86,7 +86,6 @@ export const strings = {
     days: "Day",
     empty: "No 3X windows near you this day. Spots marked 2X may still be worth a look.",
     spots: (count: number) => (count === 0 ? "none" : count === 1 ? "1 spot" : `${count} spots`),
-    showAll: (count: number) => `Show all ${count}`,
     windowDetail: (tide: string | undefined, light: string) =>
       [tide, light].filter(Boolean).join(" · "),
   },

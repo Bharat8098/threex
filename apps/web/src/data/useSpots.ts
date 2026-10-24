@@ -20,27 +20,37 @@ import {
 import { type SpotConditions, conditionsFor } from "./conditions.ts";
 import { type Point, distanceKm } from "./geo.ts";
 
+/** Every spot this close is listed and scored: 3X is an absolute bar, not a ranking, so an
+ * angler sees all the places that clear it, however many there are. */
 const RADIUS_KM = 25;
-const MAX_SPOTS = 40;
 
 type Request = WorkerRequest extends infer R ? (R extends unknown ? Omit<R, "id"> : never) : never;
 
 let worker: Worker | undefined;
 let nextId = 1;
+/** Sends a request to the scoring worker; `onMessage` sees each response for it until it
+ * returns true. */
+function post(request: Request, onMessage: (response: WorkerResponse) => boolean): () => void {
+  worker ??= new Worker(new URL("../workers/score.worker.ts", import.meta.url), { type: "module" });
+  const id = nextId++;
+  const listener = (event: MessageEvent<WorkerResponse>) => {
+    if (event.data.id === id && onMessage(event.data)) stop();
+  };
+  const stop = () => worker!.removeEventListener("message", listener);
+  worker.addEventListener("message", listener);
+  worker.postMessage({ ...request, id } as WorkerRequest);
+  return stop;
+}
+
 function ask<K extends Request["kind"]>(
   request: Extract<Request, { kind: K }>,
 ): Promise<Extract<WorkerResponse, { kind: K }>> {
-  worker ??= new Worker(new URL("../workers/score.worker.ts", import.meta.url), { type: "module" });
-  const id = nextId++;
-  return new Promise((resolve) => {
-    const listener = (event: MessageEvent<WorkerResponse>) => {
-      if (event.data.id !== id) return;
-      worker!.removeEventListener("message", listener);
-      resolve(event.data as Extract<WorkerResponse, { kind: K }>);
-    };
-    worker!.addEventListener("message", listener);
-    worker!.postMessage({ ...request, id } as WorkerRequest);
-  });
+  return new Promise((resolve) =>
+    post(request, (response) => {
+      resolve(response as Extract<WorkerResponse, { kind: K }>);
+      return true;
+    }),
+  );
 }
 
 /** The tile of a spot, from its id (`sp-` + an 8-character geohash). */
@@ -103,7 +113,7 @@ export function useSpots(point: Point | undefined, focus?: string): SpotsState {
   });
   const nearby = useMemo(() => {
     if (!tiles.data || !centre) return [];
-    const list = spotsNear(tiles.data, centre, RADIUS_KM).slice(0, MAX_SPOTS);
+    const list = spotsNear(tiles.data, centre, RADIUS_KM);
     if (focus && !list.some((n) => n.spot.id === focus)) {
       for (const tile of tiles.data) {
         const spot = tile.spots.find((s) => s.id === focus);
@@ -123,17 +133,22 @@ export function useSpots(point: Point | undefined, focus?: string): SpotsState {
   const [scoring, setScoring] = useState(false);
   useEffect(() => {
     if (!config.data || !conditions.data || nearby.length === 0) return;
-    let cancelled = false;
     setScoring(true);
     const items = nearby.map((n) => itemFor(n, conditions.data));
-    ask({ kind: "score", config: config.data, from: Date.now(), items }).then(({ results }) => {
-      if (cancelled) return;
-      setScores(new Map(results.map((r) => [r.spotId, r])));
-      setScoring(false);
+    const ids = new Set(items.map((i) => i.spot.id));
+    // Batches arrive nearest first; each is merged in, so earlier ratings stay on screen
+    // until their new ones arrive.
+    return post({ kind: "score", config: config.data, from: Date.now(), items }, (response) => {
+      if (response.kind !== "score") return false;
+      setScores((previous) => {
+        const next = new Map(previous);
+        for (const r of response.results) next.set(r.spotId, r);
+        if (response.done) for (const id of next.keys()) if (!ids.has(id)) next.delete(id);
+        return next;
+      });
+      if (response.done) setScoring(false);
+      return response.done;
     });
-    return () => {
-      cancelled = true;
-    };
   }, [config.data, conditions.data, nearby]);
 
   const error = manifest.error ?? config.error ?? tiles.error;

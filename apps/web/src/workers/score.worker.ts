@@ -121,27 +121,32 @@ function detail(item: ScoreItem, config: ScoringConfig, from: number): SpotDetai
   };
 }
 
+/** Spots per message: the nearest spots show their ratings while the rest are scored. */
+const BATCH = 20;
+
 self.onmessage = (event: MessageEvent<WorkerRequest>) => {
   const request = event.data;
-  let response: WorkerResponse;
   if (request.kind === "score") {
-    const results: SpotScore[] = [];
-    for (const item of request.items) {
-      try {
-        results.push(summary(item, request.config, request.from));
-      } catch (error) {
-        console.error(`Scoring ${item.spot.id} failed`, error);
+    const { id, items, config, from } = request;
+    for (let i = 0; i < items.length || i === 0; i += BATCH) {
+      const results: SpotScore[] = [];
+      for (const item of items.slice(i, i + BATCH)) {
+        try {
+          results.push(summary(item, config, from));
+        } catch (error) {
+          console.error(`Scoring ${item.spot.id} failed`, error);
+        }
       }
+      const done = i + BATCH >= items.length;
+      self.postMessage({ id, kind: "score", results, done } satisfies WorkerResponse);
     }
-    response = { id: request.id, kind: "score", results };
-  } else {
-    let result: SpotDetail | undefined;
-    try {
-      result = detail(request.item, request.config, request.from);
-    } catch (error) {
-      console.error(`Scoring ${request.item.spot.id} failed`, error);
-    }
-    response = { id: request.id, kind: "detail", detail: result };
+    return;
   }
-  self.postMessage(response);
+  let result: SpotDetail | undefined;
+  try {
+    result = detail(request.item, request.config, request.from);
+  } catch (error) {
+    console.error(`Scoring ${request.item.spot.id} failed`, error);
+  }
+  self.postMessage({ id: request.id, kind: "detail", detail: result } satisfies WorkerResponse);
 };

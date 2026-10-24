@@ -35,6 +35,21 @@ button {
   outline-offset: 2px;
 }
 
+/* Shrinks slightly while pressed (rows in long lists; controls use motion springs). */
+.pressable {
+  transition: transform var(--duration-press) var(--ease-press);
+}
+
+.pressable:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pressable:active {
+    transform: none;
+  }
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

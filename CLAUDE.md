@@ -11,6 +11,7 @@ ThreeX is a PWA (iPhone-first, also iPad and desktop) that recommends fishing sp
   3. update both sides in the same change.
 
   Never hand-edit `schema/`, `fixtures/v1/` or `packages/core/src/generated/`.
+- **3X is absolute and the app is exhaustive.** A pillar's X comes from a fixed threshold, never from comparison with other spots. Don't tune thresholds to make 3X rarer, and don't cap or shortlist spots: show every spot in the area that qualifies (ranking may only order lists).
 - **Thresholds and weights live in `config/scoring-config.json`, not in code.** After retuning, run the golden scenarios and the demo, bump the config `version`, and add a row to the tuning log in `docs/3x-framework.md`.
 - **No accounts, analytics, trackers or third-party SDKs.** Don't add them without asking. Store nothing about the user except a purgeable cache and an appearance preference.
 - **The user's location never leaves the device.** Weather and marine requests use spot coordinates.

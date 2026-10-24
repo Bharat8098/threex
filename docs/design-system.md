@@ -150,10 +150,12 @@ Motion uses the `motion` library with named springs that mirror SwiftUI. Only `t
 
 Everything happens in the sheet (or the iPad panel), like Apple Maps. The map never goes away, and it follows what the sheet shows.
 
+Lists are **exhaustive**: every spot within reach is listed and every qualifying spot is shown, never a top-N. Long lists stay quick: rows are memoised, press feedback is a CSS transition (`.pressable`), and ratings fill in nearest first as the worker scores them in batches.
+
 | Page | URL | What it shows |
 |---|---|---|
-| **Near you** (Now) | `/` | spots sorted by rating now, then by their best window, then by distance |
-| **Best this week** (This week) | `/` | a strip of 7 days; for the chosen day, each spot's best 3X window, best first (12, then "Show all") |
+| **Near you** (Now) | `/` | every spot within 25 km, sorted by rating now, then nearest first |
+| **Best this week** (This week) | `/` | a strip of 7 days; for the chosen day, every spot that reaches 3X, each at its best window, best first |
 | **Spot detail** | `/spot/<id>` | below |
 | **About & Data** | `/about` | the 3X idea, how ratings work, every data credit, privacy, *Clear saved data*, open source, safety |
 

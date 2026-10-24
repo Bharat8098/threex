@@ -1,5 +1,4 @@
 import { motion } from "motion/react";
-import { useState } from "react";
 import { RatingBadge } from "../components/Rating.tsx";
 import { cx } from "../components/cx.ts";
 import type { NearbySpot } from "../data/catalogue.ts";
@@ -21,16 +20,12 @@ interface Props {
   onSelect: (spotId: string) => void;
 }
 
-const FIRST = 12;
-
-/** "This week": pick a day, see the spots that reach 3X that day, each at its best window,
- * best first. */
+/** "This week": pick a day, see every spot that reaches 3X that day, each at its best
+ * window, best first. */
 export function WeekPlanner({ days, day, onDay, scores, nearby, onSelect }: Props) {
   const transition = useSpring("snappy");
-  const [all, setAll] = useState(false);
   const byId = new Map(nearby.map((n) => [n.spot.id, n]));
-  const planned = bestWindowsOnDay(scores.values(), day).filter((w) => byId.has(w.spotId));
-  const windows = all ? planned : planned.slice(0, FIRST);
+  const windows = bestWindowsOnDay(scores.values(), day).filter((w) => byId.has(w.spotId));
   return (
     <div className={styles.planner}>
       <div className={styles.strip} role="radiogroup" aria-label={strings.planner.days}>
@@ -44,10 +39,7 @@ export function WeekPlanner({ days, day, onDay, scores, nearby, onSelect }: Prop
               role="radio"
               aria-checked={selected}
               className={cx(styles.day, selected && styles.selected)}
-              onClick={() => {
-                onDay(d);
-                setAll(false);
-              }}
+              onClick={() => onDay(d)}
             >
               {selected && (
                 <motion.span
@@ -74,12 +66,10 @@ export function WeekPlanner({ days, day, onDay, scores, nearby, onSelect }: Prop
             const near = byId.get(w.spotId)!;
             return (
               <li key={`${w.spotId}-${w.start}`}>
-                <motion.button
+                <button
                   type="button"
-                  className={styles.row}
+                  className={cx("pressable", styles.row)}
                   onClick={() => onSelect(w.spotId)}
-                  whileTap={{ scale: 0.98 }}
-                  transition={transition}
                   aria-label={`${formatWindow(w.start, w.end)}, ${near.spot.name}`}
                 >
                   <span className={cx("t-headline tabular", styles.time)}>
@@ -99,20 +89,11 @@ export function WeekPlanner({ days, day, onDay, scores, nearby, onSelect }: Prop
                     </span>
                   </span>
                   <RatingBadge rating={3} size="s" />
-                </motion.button>
+                </button>
               </li>
             );
           })}
         </ol>
-      )}
-      {!all && planned.length > FIRST && (
-        <button
-          type="button"
-          className={cx("t-subheadline", styles.more)}
-          onClick={() => setAll(true)}
-        >
-          {strings.planner.showAll(planned.length)}
-        </button>
       )}
     </div>
   );

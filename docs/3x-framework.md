@@ -18,6 +18,8 @@ ThreeX recommends fishing spots from public data, not from catch reports. A fish
 
 Ratings change through the day as the tide, light and weather change. A spot is a place; a **window** is a stretch of time in which that place is 3X.
 
+**The rating is absolute, and ThreeX is exhaustive.** Each pillar earns its X by clearing a fixed threshold, never by comparison with other spots. If thirty spots in an area are 3X at dawn, all thirty are shown as 3X: an angler wants to know every place that could fish well, not a shortlist. Thresholds are tuned against what fish need (the scenarios and real data below), never to make 3X rarer. Ranking only orders lists, and the app lists every spot within reach.
+
 > **Status: v0.3** (scoring config `0.3.0`). The model is tuned against the golden scenarios in `packages/core/test/scenarios.test.ts` and checked against live Kochi data (see the *Tuning log* below). Thresholds and weights live in `config/scoring-config.json` and are published with the data, so the model can be retuned without shipping a new app.
 
 ---
