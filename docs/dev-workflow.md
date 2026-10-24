@@ -47,6 +47,8 @@ npm run screenshots -w @threex/web     # iPhone/iPad × every mode → apps/web/
 - **Data.** In dev and preview the app reads the catalogue from `/data`, which serves `pipeline/build` (run the Kochi build first), or the three-spot fixture catalogue when there is no build. A production build reads `https://threex-data.pages.dev`; set `VITE_DATA_URL` at build time to point it elsewhere. For example, `VITE_DATA_URL=/data npm run build -w @threex/web` then `preview` tests the production build against a local catalogue.
 - **Weather** comes straight from Open-Meteo in the browser, one request per 0.05° cell of spot coordinates.
 - **Scoring** runs in a Web Worker (`src/workers/score.worker.ts`) using `@threex/core`.
+- **Routes:** `/`, `/spot/<id>` and `/about` are all served by `index.html` (the service worker's navigation fallback offline; Cloudflare Pages serves `index.html` for unknown paths when there is no `404.html`).
+- **Screenshots** cover the list, spot detail, planner, About and `/gallery`. Weather is recorded on first use into `apps/web/screenshots/.weather/` and replayed for 6 hours, so every page sees the same conditions and a full run doesn't hit Open-Meteo's rate limit.
 - **Cloud sessions:** Chromium and Playwright are preinstalled; never run `playwright install`. The screenshot script picks up the session's proxy from `HTTPS_PROXY`.
 
 ## Changing the data contract

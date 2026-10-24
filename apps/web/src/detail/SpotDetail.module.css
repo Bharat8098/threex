@@ -1,0 +1,150 @@
+.detail {
+  display: grid;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+}
+
+.detail :where(p) {
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+  min-height: var(--tap);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-m);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Label-coloured text on the tint fill (the outdoor contrast rule). */
+.primary {
+  background: var(--accent-fill);
+  color: var(--on-fill);
+}
+
+.secondary {
+  background: var(--fill-tertiary);
+  color: var(--accent-ink);
+}
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-l);
+  background: var(--fill-tertiary);
+}
+
+.heroText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.flip {
+  margin-top: var(--space-1);
+  color: var(--label);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.section h3 {
+  margin: var(--space-2) 0 0;
+}
+
+.pillars {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pillar {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.status {
+  margin-left: var(--space-2);
+  font-weight: 600;
+}
+
+.status.earned {
+  color: var(--rating-3x-ink);
+}
+
+.status.missed,
+.status.unknown {
+  color: var(--label-secondary);
+}
+
+.windows {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.windows li {
+  display: grid;
+}
+
+.conditions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.tile {
+  padding: var(--space-3);
+  border-radius: var(--radius-m);
+  background: var(--fill-tertiary);
+}
+
+.tile dd {
+  margin: 0;
+}
+
+.facts,
+.credits {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.credits {
+  margin-top: var(--space-2);
+}
+
+.credits a {
+  color: var(--label-secondary);
+}
+
+.disclaimer {
+  padding-top: var(--space-3);
+  border-top: 0.5px solid var(--separator);
+}

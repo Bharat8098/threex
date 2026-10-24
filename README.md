@@ -12,7 +12,7 @@ A spot that earns all three X's is **Recommended**. A 2X spot can flip to 3X at 
 
 No accounts, no tracking, and your location never leaves your device. ThreeX ships as an installable web app for iPhone, iPad and everything else: in Safari, tap Share → Add to Home Screen.
 
-> **Status:** M3, the app shell. The Kochi pilot compiles 207 spots with 45-day tide predictions, and `@threex/core` scores them every 15 minutes against live weather: ratings, reasons, best windows and tide flips. The installable web app shows them on a map with a list of spots near you, and keeps working offline. Launch region: India.
+> **Status:** M4, the screens. The Kochi pilot compiles 207 spots with 45-day tide predictions, and `@threex/core` scores them every 15 minutes against live weather. The installable web app shows spots near you on a map; each spot explains its rating in plain words, charts today's tide and the week ahead, and gives directions. A planner lists the best 3X windows for each day of the week. It keeps working offline. Launch region: India.
 
 ## Repository
 
@@ -45,7 +45,7 @@ npm run dev -w @threex/web    # the app at http://127.0.0.1:5173
 2. **M1, pipeline v0:** Kochi pilot spots, EOT20 tides validated against the Cochin gauge. ✅
 3. **M2, `@threex/core`:** the 3X scoring engine, tide-flip analysis and the window planner. ✅
 4. **M3, app shell:** PWA, design system, map and offline cache. ✅
-5. **M4, screens:** map, spot detail, best-times planner, about & data.
+5. **M4, screens:** map, spot detail, best-times planner, about & data. ✅
 6. **M5, expansion:** all of India.
 
 ## Licence

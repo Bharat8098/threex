@@ -16,6 +16,7 @@ import { useReducedMotion } from "motion/react";
 import { useEffect, useRef } from "react";
 import type { Point } from "../data/geo.ts";
 import { color } from "../design/motion.ts";
+import { strings } from "../copy/strings.ts";
 import styles from "./MapView.module.css";
 
 export interface MapSpot {
@@ -184,7 +185,8 @@ export function MapView({ centre, spots, selected, onSelect, scheme, padding, yo
     left: padding.left + 16,
   };
 
-  // Fly to the selected spot.
+  // Fly to the selected spot (also once spots arrive, for a page opened on a spot's link).
+  const hasSpots = spots.length > 0;
   useEffect(() => {
     const instance = map.current;
     const target = spots.find((s) => s.id === selected)?.point;
@@ -196,7 +198,7 @@ export function MapView({ centre, spots, selected, onSelect, scheme, padding, yo
     };
     if (reduced) instance.jumpTo(camera);
     else instance.flyTo({ ...camera, duration: 900, essential: false });
-  }, [selected]);
+  }, [selected, hasSpots]);
 
   // Frame the nearby spots whenever the centre moves (first load, or after locating).
   const framed = useRef<string>(undefined);
@@ -206,6 +208,7 @@ export function MapView({ centre, spots, selected, onSelect, scheme, padding, yo
     const key = `${centre.lat},${centre.lon}`;
     if (framed.current === key) return;
     framed.current = key;
+    if (spots.some((s) => s.id === selected)) return; // the selection effect places the camera
     const bounds = new LngLatBounds();
     for (const s of spots) bounds.extend([s.point.lon, s.point.lat]);
     if (you) bounds.extend([you.lon, you.lat]);
@@ -214,7 +217,7 @@ export function MapView({ centre, spots, selected, onSelect, scheme, padding, yo
       maxZoom: 14,
       duration: reduced ? 0 : 900,
     });
-  }, [centre?.lat, centre?.lon, spots.length > 0]);
+  }, [centre?.lat, centre?.lon, hasSpots]);
 
   // "You are here", only when the user asked to be located.
   useEffect(() => {
@@ -225,7 +228,7 @@ export function MapView({ centre, spots, selected, onSelect, scheme, padding, yo
     }
     const dot = document.createElement("div");
     dot.className = styles.you!;
-    dot.setAttribute("aria-label", "Your location");
+    dot.setAttribute("aria-label", strings.you);
     youMarker.current?.remove();
     youMarker.current = new Marker({ element: dot })
       .setLngLat([you.lon, you.lat])
@@ -238,7 +241,7 @@ export function MapView({ centre, spots, selected, onSelect, scheme, padding, yo
       className={styles.map}
       data-scheme={scheme}
       role="application"
-      aria-label="Map of fishing spots"
+      aria-label={strings.map}
     />
   );
 }

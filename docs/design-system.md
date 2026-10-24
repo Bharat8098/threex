@@ -140,11 +140,39 @@ Motion uses the `motion` library with named springs that mirror SwiftUI. Only `t
 ## Layout
 
 - **iPhone:** a full-bleed map with floating glass controls and a draggable bottom sheet. The sheet's peek detent is set in `rem`, so it grows with the text size.
-- **iPad and desktop (≥ 768 px wide):** a fixed list panel beside the map. An inspector panel for spot detail arrives in M4.
+- **iPad and desktop (≥ 768 px wide):** a fixed panel beside the map, holding the same pages as the sheet.
 - **Text:** names and times wrap rather than truncate; a number and its unit never split ("3.9 km" uses a non-breaking space).
 - Uses `viewport-fit=cover` with `env(safe-area-inset-*)`.
 - Minimum tap target is 44 × 44 px.
 - Corner radii follow concentric shapes: inner radius = outer radius − padding.
+
+## Screens
+
+Everything happens in the sheet (or the iPad panel), like Apple Maps. The map never goes away, and it follows what the sheet shows.
+
+| Page | URL | What it shows |
+|---|---|---|
+| **Near you** (Now) | `/` | spots sorted by rating now, then by their best window, then by distance |
+| **Best this week** (This week) | `/` | a strip of 7 days; for the chosen day, each spot's best 3X window, best first (12, then "Show all") |
+| **Spot detail** | `/spot/<id>` | below |
+| **About & Data** | `/about` | the 3X idea, how ratings work, every data credit, privacy, *Clear saved data*, open source, safety |
+
+A page pushes with a short slide (a crossfade under Reduce Motion), and a back link labelled with where it goes ("‹ Near you") returns. Each page has its own URL, so the browser's back button works and a spot can be shared. Escape goes back on a keyboard. About opens from the title pill (ThreeX ⓘ) and from the foot of the list.
+
+**Spot detail**, top to bottom:
+1. Locality · water type · distance, then **Directions** (opens Apple Maps on Apple devices, Google Maps elsewhere, with the spot's coordinates; the maps app uses the device's own location) and **Share** (the share sheet, or copy the link).
+2. **Hero:** the big badge, "Recommended now", and until when it holds. When not 3X, the next 3X window. When 2X, the flip: "Gets Safety on the rising tide, Today 20:00–21:15".
+3. **Why:** the three pillars, each with its status and the one or two reasons that matter most (what helped if earned, what held it back if not), in plain words: "Breakwater 15 m away", "Mangroves still dry", "Overcast: low light".
+4. **Today:** the next 24 hours: tide curve with highs and lows, night shaded, and the rating ribbon under it (green 3X, yellow 2X). Freshwater spots show only the ribbon.
+5. **This week:** seven ribbons, midnight to midnight, with a legend.
+6. **Best windows:** the top five, with tide and light.
+7. **Conditions now:** wind, cloud, air and water temperature (against the usual for the month), waves (coastal spots only: Open-Meteo answers inland points from the nearest sea cell), current, river flow (against its median).
+8. **About this spot:** nearby structure and habitat with distances, depth, confidence, coordinates, and the data credits for this spot.
+9. The safety note.
+
+## Words
+
+All user-facing text is in `apps/web/src/copy/`: `strings.ts` (every label and sentence), `reasons.ts` (reason codes into phrases) and `format.ts` (times, numbers and distances). A translation is a new strings file, checked by a native speaker. Units are metric: km/h for wind and current, °C, metres, m³/s. Write short, plain sentences: the app is read outdoors, at a glance.
 
 ## Map
 

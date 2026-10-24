@@ -4,6 +4,8 @@ import { PillarMarks, type PillarStatuses, RatingBadge } from "./Rating.tsx";
 import styles from "./SpotRow.module.css";
 
 export interface SpotRowProps {
+  /** The spot's id, as `data-spot` (for tests and screenshots). */
+  id?: string;
   name: string;
   detail: string;
   rating?: number;
@@ -14,6 +16,7 @@ export interface SpotRowProps {
 }
 
 export function SpotRow({
+  id,
   name,
   detail,
   rating,
@@ -27,6 +30,7 @@ export function SpotRow({
     <motion.button
       type="button"
       className={styles.row}
+      data-spot={id}
       aria-current={selected || undefined}
       onClick={onSelect}
       whileTap={{ scale: 0.98 }}

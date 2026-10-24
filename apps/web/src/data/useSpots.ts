@@ -1,6 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
+import type { Manifest, ScoringConfig } from "@threex/core";
 import { useEffect, useMemo, useState } from "react";
-import type { ScoreRequest, ScoreResponse, SpotScore } from "../workers/protocol.ts";
+import type {
+  ScoreItem,
+  SpotDetail,
+  SpotScore,
+  WorkerRequest,
+  WorkerResponse,
+} from "../workers/protocol.ts";
 import {
   type NearbySpot,
   loadManifest,
@@ -10,26 +17,45 @@ import {
   spotsNear,
   tilesNear,
 } from "./catalogue.ts";
-import { conditionsFor } from "./conditions.ts";
-import type { Point } from "./geo.ts";
+import { type SpotConditions, conditionsFor } from "./conditions.ts";
+import { type Point, distanceKm } from "./geo.ts";
 
 const RADIUS_KM = 25;
 const MAX_SPOTS = 40;
 
+type Request = WorkerRequest extends infer R ? (R extends unknown ? Omit<R, "id"> : never) : never;
+
 let worker: Worker | undefined;
 let nextId = 1;
-function scoreInWorker(request: Omit<ScoreRequest, "id">): Promise<SpotScore[]> {
+function ask<K extends Request["kind"]>(
+  request: Extract<Request, { kind: K }>,
+): Promise<Extract<WorkerResponse, { kind: K }>> {
   worker ??= new Worker(new URL("../workers/score.worker.ts", import.meta.url), { type: "module" });
   const id = nextId++;
   return new Promise((resolve) => {
-    const listener = (event: MessageEvent<ScoreResponse>) => {
+    const listener = (event: MessageEvent<WorkerResponse>) => {
       if (event.data.id !== id) return;
       worker!.removeEventListener("message", listener);
-      resolve(event.data.results);
+      resolve(event.data as Extract<WorkerResponse, { kind: K }>);
     };
     worker!.addEventListener("message", listener);
-    worker!.postMessage({ ...request, id } satisfies ScoreRequest);
+    worker!.postMessage({ ...request, id } as WorkerRequest);
   });
+}
+
+/** The tile of a spot, from its id (`sp-` + an 8-character geohash). */
+export function tileOfSpot(spotId: string): string | undefined {
+  return /^sp-[0-9b-hjkmnp-z]{4,}/.test(spotId) ? spotId.slice(3, 7) : undefined;
+}
+
+function itemFor(nearby: NearbySpot, conditions: SpotConditions): ScoreItem {
+  const { spot, tile } = nearby;
+  return {
+    spot,
+    // Only the spot's own tide series: keeps worker messages small.
+    tile: { ...tile, spots: [], tides: tile.tides.filter((t) => t.id === spot.tideClusterId) },
+    conditions: conditions.bySpot.get(spot.id) ?? {},
+  };
 }
 
 export interface SpotsState {
@@ -37,16 +63,22 @@ export interface SpotsState {
   error?: string;
   centre?: Point;
   regionName?: string;
+  manifest?: Manifest;
+  config?: ScoringConfig;
   nearby: NearbySpot[];
   scores: Map<string, SpotScore>;
   scoring: boolean;
   /** How many nearby spots are missing some weather data. */
   incomplete: number;
   retryConditions: () => void;
+  /** Changes whenever new conditions arrive, so details re-score. */
+  conditionsAt: number;
+  item: (spotId: string) => ScoreItem | undefined;
 }
 
-/** Spots near `point` (or the region centre), scored for now and the coming week. */
-export function useSpots(point: Point | undefined): SpotsState {
+/** Spots near `point` (or the region centre), scored for now and the coming week. `focus` is a
+ * spot that must be included even if it is not among the nearest (a shared link). */
+export function useSpots(point: Point | undefined, focus?: string): SpotsState {
   const manifest = useQuery({
     queryKey: ["manifest"],
     queryFn: loadManifest,
@@ -59,18 +91,27 @@ export function useSpots(point: Point | undefined): SpotsState {
     staleTime: Infinity,
   });
   const centre = point ?? (manifest.data ? regionCentre(manifest.data) : undefined);
-  const refs = manifest.data && centre ? tilesNear(manifest.data, centre, RADIUS_KM) : [];
+  const focusTile = focus ? tileOfSpot(focus) : undefined;
+  const near = manifest.data && centre ? tilesNear(manifest.data, centre, RADIUS_KM) : [];
+  const extra = manifest.data?.tiles.find((t) => t.geohash === focusTile && !near.includes(t));
+  const refs = extra ? [...near, extra] : near;
   const tiles = useQuery({
     queryKey: ["tiles", refs.map((r) => r.sha256)],
     queryFn: () => Promise.all(refs.map(loadTile)),
     enabled: refs.length > 0,
     staleTime: Infinity,
   });
-  const nearby = useMemo(
-    () =>
-      tiles.data && centre ? spotsNear(tiles.data, centre, RADIUS_KM).slice(0, MAX_SPOTS) : [],
-    [tiles.data, centre?.lat, centre?.lon],
-  );
+  const nearby = useMemo(() => {
+    if (!tiles.data || !centre) return [];
+    const list = spotsNear(tiles.data, centre, RADIUS_KM).slice(0, MAX_SPOTS);
+    if (focus && !list.some((n) => n.spot.id === focus)) {
+      for (const tile of tiles.data) {
+        const spot = tile.spots.find((s) => s.id === focus);
+        if (spot) list.push({ spot, tile, distanceKm: distanceKm(centre, spot.coordinate) });
+      }
+    }
+    return list;
+  }, [tiles.data, centre?.lat, centre?.lon, focus]);
   const conditions = useQuery({
     queryKey: ["conditions", nearby.map((n) => n.spot.id)],
     queryFn: () => conditionsFor(nearby.map((n) => n.spot)),
@@ -84,12 +125,8 @@ export function useSpots(point: Point | undefined): SpotsState {
     if (!config.data || !conditions.data || nearby.length === 0) return;
     let cancelled = false;
     setScoring(true);
-    const items = nearby.map(({ spot, tile }) => ({
-      spot,
-      tile: { ...tile, spots: [], tides: tile.tides.filter((t) => t.id === spot.tideClusterId) },
-      conditions: conditions.data.bySpot.get(spot.id) ?? {},
-    }));
-    scoreInWorker({ config: config.data, from: Date.now(), items }).then((results) => {
+    const items = nearby.map((n) => itemFor(n, conditions.data));
+    ask({ kind: "score", config: config.data, from: Date.now(), items }).then(({ results }) => {
       if (cancelled) return;
       setScores(new Map(results.map((r) => [r.spotId, r])));
       setScoring(false);
@@ -105,10 +142,36 @@ export function useSpots(point: Point | undefined): SpotsState {
     error: error ? String(error.message ?? error) : undefined,
     centre,
     regionName: manifest.data?.region.name,
+    manifest: manifest.data,
+    config: config.data,
     nearby,
     scores,
     scoring: scoring || conditions.isFetching,
     incomplete: conditions.isFetching ? 0 : (conditions.data?.incomplete.size ?? 0),
     retryConditions: () => void conditions.refetch(),
+    conditionsAt: conditions.dataUpdatedAt,
+    item: (spotId) => {
+      const found = nearby.find((n) => n.spot.id === spotId);
+      return found && conditions.data ? itemFor(found, conditions.data) : undefined;
+    },
   };
+}
+
+/** The full week for one spot, scored on demand for the detail screen. */
+export function useSpotDetail(state: SpotsState, spotId: string | undefined) {
+  const item = spotId ? state.item(spotId) : undefined;
+  return useQuery({
+    queryKey: ["detail", spotId, state.conditionsAt, state.config?.version],
+    queryFn: async (): Promise<SpotDetail | null> => {
+      const { detail } = await ask({
+        kind: "detail",
+        config: state.config!,
+        from: Date.now(),
+        item: item!,
+      });
+      return detail ?? null;
+    },
+    enabled: !!item && !!state.config,
+    staleTime: 5 * 60_000,
+  });
 }
