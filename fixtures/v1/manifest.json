@@ -10,8 +10,8 @@
   "tiles": [
     {
       "geohash": "t9y0",
-      "path": "tiles/t9y0.692558497adc.json",
-      "sha256": "692558497adce4f393ee5b7c34c1fe75404c82c3bcf27e8ec3d8bf7d1b4f1d10",
+      "path": "tiles/t9y0.4078d2b769e4.json",
+      "sha256": "4078d2b769e476101ccc69bac5bd7fae05bd193beff27fff058bd78cb7cd7a27",
       "spotCount": 2
     },
     {
@@ -36,11 +36,11 @@
       "displayRequired": true
     },
     {
-      "id": "fes2022",
-      "name": "FES2022 global tide model",
-      "license": "AVISO FES licence",
-      "url": "https://www.aviso.altimetry.fr/en/data/products/auxiliary-products/global-tide-fes.html",
-      "text": "The FES2022 Tide product was funded by CNES, produced by LEGOS, NOVELTIS and CLS and made freely available by AVISO",
+      "id": "eot20",
+      "name": "EOT20 global ocean tide model",
+      "license": "CC-BY-4.0",
+      "url": "https://doi.org/10.17882/79489",
+      "text": "Tides: EOT20, Hart-Davis et al. (2021), DGFI-TUM (CC BY 4.0)",
       "displayRequired": true
     },
     {

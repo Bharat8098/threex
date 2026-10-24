@@ -14,14 +14,11 @@ ATTRIBUTIONS: dict[str, Attribution] = {
             display_required=True,
         ),
         Attribution(
-            id="fes2022",
-            name="FES2022 global tide model",
-            license="AVISO FES licence",
-            url="https://www.aviso.altimetry.fr/en/data/products/auxiliary-products/global-tide-fes.html",
-            text=(
-                "The FES2022 Tide product was funded by CNES, produced by LEGOS, NOVELTIS and "
-                "CLS and made freely available by AVISO"
-            ),
+            id="eot20",
+            name="EOT20 global ocean tide model",
+            license="CC-BY-4.0",
+            url="https://doi.org/10.17882/79489",
+            text="Tides: EOT20, Hart-Davis et al. (2021), DGFI-TUM (CC BY 4.0)",
             display_required=True,
         ),
         Attribution(

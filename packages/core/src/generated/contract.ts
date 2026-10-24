@@ -180,7 +180,7 @@ export interface River {
 export interface TideSeries {
   id: string;
   /**
-   * Tide model used for the prediction, e.g. FES2022b.
+   * How the series was predicted, e.g. eot20 or uhslc-harmonics.
    */
   model: string;
   datum: "MSL";

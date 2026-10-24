@@ -727,7 +727,7 @@
           "type": "string"
         },
         "model": {
-          "description": "Tide model used for the prediction, e.g. FES2022b.",
+          "description": "How the series was predicted, e.g. eot20 or uhslc-harmonics.",
           "title": "Model",
           "type": "string"
         },
