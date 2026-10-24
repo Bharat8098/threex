@@ -31,8 +31,7 @@ export type SignalId =
   | "windSpeed"
   | "waveHeight"
   | "dischargeRatio"
-  | "structureCover"
-  | "vegetationCover"
+  | "cover"
   | "waterDepth"
   | "nurseryHabitat"
   | "chlorophyll"
@@ -232,6 +231,10 @@ export interface WaterTypeScoring {
 }
 export interface PillarScoring {
   /**
+   * How signal memberships combine: a weighted mean lets strengths offset weaknesses; a weighted geometric mean lets the weakest factor limit the pillar.
+   */
+  combine: "mean" | "geometric";
+  /**
    * Score at or above which the pillar earns its X.
    */
   threshold: number;
@@ -255,6 +258,10 @@ export interface RatingScoring {
 export interface PlannerScoring {
   horizonHours: number;
   minWindowMinutes: number;
+  /**
+   * Time resolution of the engine: one evaluation per step.
+   */
+  stepMinutes: number;
 }
 /**
  * Trapezoid membership: 1 inside [idealMin, idealMax], falling linearly to 0 over

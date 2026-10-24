@@ -11,7 +11,7 @@ ThreeX is a PWA (iPhone-first, also iPad and desktop) that recommends fishing sp
   3. update both sides in the same change.
 
   Never hand-edit `schema/`, `fixtures/v1/` or `packages/core/src/generated/`.
-- **Thresholds and weights live in `config/scoring-config.json`, not in code.**
+- **Thresholds and weights live in `config/scoring-config.json`, not in code.** After retuning, run the golden scenarios and the demo, bump the config `version`, and add a row to the tuning log in `docs/3x-framework.md`.
 - **No accounts, analytics, trackers or third-party SDKs.** Don't add them without asking. Store nothing about the user except a purgeable cache and an appearance preference.
 - **The user's location never leaves the device.** Weather and marine requests use spot coordinates.
 - **Keep data credits visible** (`pipeline/src/compiler/attributions.py`, About & Data screen, map attribution).
@@ -35,7 +35,8 @@ ThreeX is a PWA (iPhone-first, also iPad and desktop) that recommends fishing sp
 cd pipeline && uv sync && uv run pytest && uv run ruff check . && uv run ruff format --check .
 cd pipeline && uv run threex-compile schema --check && uv run threex-compile fixtures --check
 cd pipeline && uv run threex-compile build --region kochi --out build   # real data; needs osmium-tool
-npm ci && npm run gen:types && npm run typecheck && npm test
+npm ci && npm run gen:types && npm run format:check && npm run typecheck && npm test
+NODE_USE_ENV_PROXY=1 npm run demo -w @threex/core   # engine on the real Kochi build + live weather
 ```
 
 ## Environment

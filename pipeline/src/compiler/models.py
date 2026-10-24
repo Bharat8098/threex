@@ -304,8 +304,7 @@ class SignalId(StrEnum):
     WAVE_HEIGHT = "waveHeight"
     DISCHARGE_RATIO = "dischargeRatio"
     # Safety
-    STRUCTURE_COVER = "structureCover"
-    VEGETATION_COVER = "vegetationCover"
+    COVER = "cover"
     WATER_DEPTH = "waterDepth"
     # Food
     NURSERY_HABITAT = "nurseryHabitat"
@@ -328,9 +327,7 @@ PILLAR_SIGNALS: dict[Pillar, frozenset[SignalId]] = {
             SignalId.DISCHARGE_RATIO,
         }
     ),
-    Pillar.SAFETY: frozenset(
-        {SignalId.STRUCTURE_COVER, SignalId.VEGETATION_COVER, SignalId.WATER_DEPTH}
-    ),
+    Pillar.SAFETY: frozenset({SignalId.COVER, SignalId.WATER_DEPTH}),
     Pillar.FOOD: frozenset(
         {
             SignalId.NURSERY_HABITAT,
@@ -361,6 +358,12 @@ class Band(Contract):
 
 
 class PillarScoring(Contract):
+    combine: Literal["mean", "geometric"] = Field(
+        description=(
+            "How signal memberships combine: a weighted mean lets strengths offset weaknesses; "
+            "a weighted geometric mean lets the weakest factor limit the pillar."
+        )
+    )
     threshold: UnitInterval = Field(description="Score at or above which the pillar earns its X.")
     min_coverage: UnitInterval = Field(
         description="Share of total signal weight that must have data, else the pillar is unknown."
@@ -415,6 +418,15 @@ class RatingScoring(Contract):
 class PlannerScoring(Contract):
     horizon_hours: int = Field(ge=1, le=240)
     min_window_minutes: int = Field(ge=0)
+    step_minutes: int = Field(
+        ge=5, le=60, description="Time resolution of the engine: one evaluation per step."
+    )
+
+    @model_validator(mode="after")
+    def _divides_the_hour(self) -> Self:
+        if 60 % self.step_minutes:
+            raise ValueError("step_minutes must divide 60")
+        return self
 
 
 class ScoringConfig(Contract):

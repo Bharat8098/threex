@@ -11,14 +11,19 @@
   "scripts": {
     "gen:types": "node scripts/gen-types.mjs",
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "demo": "node scripts/demo.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
+    "@types/suncalc": "^1.9.2",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "json-schema-to-typescript": "^16.0.0",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "suncalc": "^1.9.0"
   }
 }

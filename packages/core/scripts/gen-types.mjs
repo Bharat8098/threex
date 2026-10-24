@@ -19,9 +19,10 @@ function tidy(node, isDef = false) {
   const out = {};
   for (const [key, value] of Object.entries(node)) {
     if (key === "title" && !isDef) continue;
-    out[key] = key === "$defs"
-      ? Object.fromEntries(Object.entries(value).map(([name, def]) => [name, tidy(def, true)]))
-      : tidy(value);
+    out[key] =
+      key === "$defs"
+        ? Object.fromEntries(Object.entries(value).map(([name, def]) => [name, tidy(def, true)]))
+        : tidy(value);
   }
   // Maps keyed by an enum (e.g. signals keyed by SignalId) become typed records.
   const keyRef = out.propertyNames?.$ref;
@@ -33,19 +34,22 @@ function tidy(node, isDef = false) {
 }
 
 const { $id: _id, ...rest } = bundle; // json-schema-to-typescript would name the root after $id
-const root = tidy({
-  ...rest,
-  title: "ThreeXContract",
-  description: "The three documents the pipeline publishes.",
-  type: "object",
-  properties: {
-    manifest: { $ref: "#/$defs/Manifest" },
-    tile: { $ref: "#/$defs/Tile" },
-    scoringConfig: { $ref: "#/$defs/ScoringConfig" },
+const root = tidy(
+  {
+    ...rest,
+    title: "ThreeXContract",
+    description: "The three documents the pipeline publishes.",
+    type: "object",
+    properties: {
+      manifest: { $ref: "#/$defs/Manifest" },
+      tile: { $ref: "#/$defs/Tile" },
+      scoringConfig: { $ref: "#/$defs/ScoringConfig" },
+    },
+    required: ["manifest", "tile", "scoringConfig"],
+    additionalProperties: false,
   },
-  required: ["manifest", "tile", "scoringConfig"],
-  additionalProperties: false,
-}, false);
+  false,
+);
 
 const ts = await compile(root, "ThreeXContract", {
   additionalProperties: false,
@@ -56,7 +60,8 @@ const ts = await compile(root, "ThreeXContract", {
     " * Do not edit. Change pipeline/src/compiler/models.py, then regenerate. */",
 });
 // Drop the generator's "This interface was referenced by…" boilerplate from doc comments.
-const boilerplate = / \* This interface was referenced by `ThreeXContract`'s JSON-Schema\n \* via the `definition` "\w+"\.\n/g;
+const boilerplate =
+  / \* This interface was referenced by `ThreeXContract`'s JSON-Schema\n \* via the `definition` "\w+"\.\n/g;
 const cleaned = ts
   .replace(boilerplate, "")
   .replace(/\/\*\*\n \*\/\n/g, "")
