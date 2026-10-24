@@ -1,0 +1,77 @@
+.badge {
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-rounded);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.s {
+  min-width: 30px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: calc(12rem / 17);
+}
+.m {
+  min-width: 40px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: calc(15rem / 17);
+}
+.l {
+  min-width: 56px;
+  height: 40px;
+  padding: 0 14px;
+  font-size: calc(22rem / 17);
+}
+
+.r3 {
+  background: var(--rating-3x-fill);
+  color: var(--on-fill);
+}
+.r2 {
+  background: var(--rating-2x-fill);
+  color: var(--on-fill);
+}
+.low {
+  background: var(--rating-low-fill);
+  color: var(--rating-low-ink);
+}
+.pending {
+  opacity: 0.6;
+}
+
+.marks {
+  display: inline-flex;
+  gap: var(--space-1);
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-pill);
+  font-size: 15px;
+}
+
+.comfort.earned {
+  color: var(--comfort-ink);
+}
+.safety.earned {
+  color: var(--safety-ink);
+}
+.food.earned {
+  color: var(--food-ink);
+}
+.missed {
+  color: var(--label-tertiary);
+}
+.unknown {
+  color: var(--label-tertiary);
+  outline: 1.5px dashed var(--label-tertiary);
+  outline-offset: -2px;
+}

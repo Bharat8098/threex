@@ -1,0 +1,85 @@
+.app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.top {
+  position: fixed;
+  z-index: 20;
+  top: calc(var(--safe-top) + var(--space-3));
+  left: calc(var(--safe-left) + var(--space-3));
+  right: calc(var(--safe-right) + var(--space-3));
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  pointer-events: none;
+}
+
+.top > * {
+  pointer-events: auto;
+}
+
+.app[data-wide] .top {
+  left: calc(var(--safe-left) + var(--space-4) + min(380px, 42vw) + var(--space-4));
+}
+
+.lead {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+}
+
+/* Under the chips, clear of the control column and the map's attribution button. */
+.banner {
+  position: fixed;
+  z-index: 20;
+  top: calc(var(--safe-top) + 112px);
+  left: calc(var(--safe-left) + var(--space-3));
+  right: calc(var(--safe-right) + var(--space-3) + var(--tap) + var(--space-3));
+  display: flex;
+  pointer-events: none;
+}
+
+.app[data-wide] .banner {
+  top: calc(var(--safe-top) + var(--space-3) + var(--tap) + var(--space-3));
+  left: calc(var(--safe-left) + var(--space-4) + min(380px, 42vw) + var(--space-4));
+}
+
+.list {
+  margin-top: var(--space-1);
+}
+
+.note {
+  margin: var(--space-2) 0;
+}
+
+/* Inline in text: the 44 px tap area comes from ::after, so line spacing stays normal. */
+.link {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  inset: -12px -8px;
+}

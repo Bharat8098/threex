@@ -1,0 +1,31 @@
+.button {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: var(--radius-pill);
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--label);
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.button:not(:global(.glass)) {
+  border: 0;
+}
+
+.pressed {
+  color: var(--accent-ink);
+}
+
+.group {
+  display: flex;
+  border-radius: var(--radius-pill);
+  padding: 2px;
+}
+
+.vertical {
+  flex-direction: column;
+}

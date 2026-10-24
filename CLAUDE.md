@@ -27,7 +27,8 @@ ThreeX is a PWA (iPhone-first, also iPad and desktop) that recommends fishing sp
 - **Glass is for the control layer only.** Never stack it, and never put it on content.
 - **Animate only transform and opacity.**
 - Every animation must respect `prefers-reduced-motion`.
-- After any UI change, take Playwright screenshots at iPhone and iPad sizes in light, dark, high-contrast and reduced-motion modes, and look at them before saying it's done.
+- After any UI change, run `npm run screenshots -w @threex/web`. It covers iPhone and iPad in light, dark, high-contrast, reduced-motion, large-text and offline modes. Look at the images before saying it's done.
+- Never run `playwright install`: the cloud image's Chromium matches the pinned `playwright@1.63.0`.
 
 ## Commands
 
@@ -37,6 +38,9 @@ cd pipeline && uv run threex-compile schema --check && uv run threex-compile fix
 cd pipeline && uv run threex-compile build --region kochi --out build   # real data; needs osmium-tool
 npm ci && npm run gen:types && npm run format:check && npm run typecheck && npm test
 NODE_USE_ENV_PROXY=1 npm run demo -w @threex/core   # engine on the real Kochi build + live weather
+npm run dev -w @threex/web            # app at 127.0.0.1:5173; /data serves pipeline/build (or fixtures)
+npm run screenshots -w @threex/web    # needs the dev server; writes apps/web/screenshots/
+npm run build -w @threex/web
 ```
 
 ## Environment

@@ -1,0 +1,95 @@
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: calc(var(--safe-top) + 112px);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--bg-elevated);
+  box-shadow:
+    0 -1px 0 var(--separator),
+    0 -10px 40px rgb(0 0 0 / 0.12);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.header {
+  flex: none;
+  padding: 6px var(--space-4) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: none;
+  touch-action: none;
+  cursor: grab;
+}
+
+.grabber {
+  display: block;
+  width: 72px;
+  height: 22px;
+  margin: 0 auto;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+
+.grabber::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 8px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--label-tertiary);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.titleRow h2,
+.panelHeader h2 {
+  margin: 0;
+}
+
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: 0 var(--space-4) calc(var(--space-6) + var(--safe-bottom));
+}
+
+.panel {
+  position: fixed;
+  z-index: 10;
+  top: calc(var(--space-4) + var(--safe-top));
+  bottom: calc(var(--space-4) + var(--safe-bottom));
+  left: calc(var(--space-4) + var(--safe-left));
+  width: min(380px, 42vw);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-l);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-float);
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-5) var(--space-3);
+}
+
+.panel .scroll {
+  padding: 0 var(--space-4) var(--space-5);
+}

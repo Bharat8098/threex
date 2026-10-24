@@ -1,0 +1,18 @@
+/* Frosted glass for the control layer (floating map controls, chips, sheet header).
+ * Never on content, never stacked. Becomes solid under Increase Contrast / Reduce
+ * Transparency (see tokens.css). */
+.glass {
+  background: var(--glass-fill);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 0.5px solid var(--glass-border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    var(--shadow-float);
+}
+
+@media (prefers-contrast: more) {
+  .glass {
+    border-width: 1px;
+  }
+}
