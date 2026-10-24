@@ -23,7 +23,8 @@ export type WorkerRequest =
   | { id: number; kind: "detail"; config: ScoringConfig; from: number; item: ScoreItem };
 
 export type WorkerResponse =
-  | { id: number; kind: "score"; results: SpotScore[] }
+  /** Scores arrive in batches, nearest spots first; the last batch has `done`. */
+  | { id: number; kind: "score"; results: SpotScore[]; done: boolean }
   | { id: number; kind: "detail"; detail?: SpotDetail };
 
 export interface WindowLite {

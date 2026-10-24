@@ -1,10 +1,9 @@
-import { motion } from "motion/react";
-import { useSpring } from "../design/motion.ts";
+import { memo } from "react";
 import { PillarMarks, type PillarStatuses, RatingBadge } from "./Rating.tsx";
 import styles from "./SpotRow.module.css";
 
 export interface SpotRowProps {
-  /** The spot's id, as `data-spot` (for tests and screenshots). */
+  /** The spot's id: passed to `onSelect`, and set as `data-spot` for tests and screenshots. */
   id?: string;
   name: string;
   detail: string;
@@ -12,10 +11,11 @@ export interface SpotRowProps {
   statuses: PillarStatuses;
   best?: string;
   selected?: boolean;
-  onSelect?: () => void;
+  onSelect?: (id?: string) => void;
 }
 
-export function SpotRow({
+/** One spot in the list. Memoised: a long list re-renders only the rows that changed. */
+export const SpotRow = memo(function SpotRow({
   id,
   name,
   detail,
@@ -25,17 +25,13 @@ export function SpotRow({
   selected,
   onSelect,
 }: SpotRowProps) {
-  const transition = useSpring("snappy");
   return (
-    <motion.button
+    <button
       type="button"
-      className={styles.row}
+      className={`pressable ${styles.row}`}
       data-spot={id}
       aria-current={selected || undefined}
-      onClick={onSelect}
-      whileTap={{ scale: 0.98 }}
-      transition={transition}
-      layout="position"
+      onClick={() => onSelect?.(id)}
     >
       <span className={styles.text}>
         <span className={`t-headline ${styles.name}`}>{name}</span>
@@ -46,6 +42,6 @@ export function SpotRow({
         </span>
       </span>
       <RatingBadge rating={rating} />
-    </motion.button>
+    </button>
   );
-}
+});

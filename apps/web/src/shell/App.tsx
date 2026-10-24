@@ -1,6 +1,6 @@
 import { CircleHalf, Crosshair, Info, Moon, Sun } from "@phosphor-icons/react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { About } from "../about/About.tsx";
 import { ChipGroup } from "../components/ChipGroup.tsx";
 import { GlassButton, GlassGroup } from "../components/GlassButton.tsx";
@@ -53,14 +53,16 @@ export function App() {
   const [detent, setDetent] = useState<Detent>(route.name === "list" ? "peek" : "half");
 
   const rows = useMemo(() => {
-    return state.nearby
-      .map((nearby) => ({ ...nearby, score: state.scores.get(nearby.spot.id) }))
-      .sort((a, b) => {
-        const rating =
-          (b.score?.now.rating ?? -1) - (a.score?.now.rating ?? -1) ||
-          (b.score?.windows[0]?.score ?? 0) - (a.score?.windows[0]?.score ?? 0);
-        return rating || a.distanceKm - b.distanceKm;
-      });
+    return (
+      state.nearby
+        .map((nearby) => ({ ...nearby, score: state.scores.get(nearby.spot.id) }))
+        // Best rating now first; within a rating, nearest first.
+        .sort(
+          (a, b) =>
+            (b.score?.now.rating ?? -1) - (a.score?.now.rating ?? -1) ||
+            a.distanceKm - b.distanceKm,
+        )
+    );
   }, [state.nearby, state.scores]);
 
   const mapSpots: MapSpot[] = rows.map(({ spot, score }) => ({
@@ -70,10 +72,14 @@ export function App() {
     name: spot.name,
   }));
 
-  const open = (id: string) => {
-    go({ name: "spot", id });
-    if (!wide && detent === "peek") setDetent("half");
-  };
+  const open = useCallback(
+    (id?: string) => {
+      if (!id) return;
+      go({ name: "spot", id });
+      if (!wide) setDetent((d) => (d === "peek" ? "half" : d));
+    },
+    [go, wide],
+  );
 
   // Escape goes back, as on a desktop.
   useEffect(() => {
@@ -254,7 +260,7 @@ export function App() {
                               )
                             : undefined
                         }
-                        onSelect={() => open(spot.id)}
+                        onSelect={open}
                       />
                     ))}
                   </div>

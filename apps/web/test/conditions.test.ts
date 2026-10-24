@@ -33,10 +33,11 @@ afterEach(() => {
 });
 
 describe("weather cells", () => {
-  it("snaps spots to 0.05° cells", () => {
-    expect(cellOf(spot("Fort Kochi")).key).toBe("9.95,76.25");
-    expect(cellOf(spot("Vypin")).key).toBe("10.00,76.25");
-    expect(cellOf(spot("Periyar")).key).toBe("10.10,76.35");
+  it("groups weather by 0.1° and river flow by 0.05°", () => {
+    expect(cellOf(spot("Fort Kochi"), "forecast").key).toBe("10.00,76.20");
+    expect(cellOf(spot("Vypin"), "marine").key).toBe("10.00,76.20");
+    expect(cellOf(spot("Periyar"), "forecast").key).toBe("10.10,76.40");
+    expect(cellOf(spot("Periyar"), "flood").key).toBe("10.10,76.35");
   });
 });
 
@@ -49,15 +50,16 @@ describe("conditionsFor", () => {
     });
     const { bySpot, incomplete } = await conditionsFor([...spots, spot("Fort Kochi")]);
 
-    expect(urls.filter((u) => u.includes("api.open-meteo.com/v1/forecast"))).toHaveLength(3);
-    expect(urls.filter((u) => u.includes("marine"))).toHaveLength(2);
+    // Fort Kochi and Vypin share a 0.1° cell; Periyar has its own, and a river-flow cell.
+    expect(urls.filter((u) => u.includes("api.open-meteo.com/v1/forecast"))).toHaveLength(2);
+    expect(urls.filter((u) => u.includes("marine"))).toHaveLength(1);
     expect(urls.filter((u) => u.includes("flood"))).toHaveLength(1);
     const cells = new Set(
       urls
         .map((u) => new URL(u).searchParams)
         .map((q) => `${q.get("latitude")},${q.get("longitude")}`),
     );
-    expect([...cells].sort()).toEqual(["10.0000,76.2500", "10.1000,76.3500", "9.9500,76.2500"]);
+    expect([...cells].sort()).toEqual(["10.0000,76.2000", "10.1000,76.3500", "10.1000,76.4000"]);
 
     expect(incomplete.size).toBe(0);
     expect(bySpot.get(spot("Fort Kochi").id)?.waveHeightM).toBeDefined();
@@ -77,7 +79,7 @@ describe("conditionsFor", () => {
     await vi.runAllTimersAsync();
     const { bySpot, incomplete } = await pending;
 
-    expect(marineCalls).toBe(2 * 3);
+    expect(marineCalls).toBe(1 * 3); // one cell, three attempts
     expect([...incomplete].sort()).toEqual([spot("Fort Kochi").id, spot("Vypin").id].sort());
     const fortKochi = bySpot.get(spot("Fort Kochi").id)!;
     expect(fortKochi.waveHeightM).toBeUndefined();
@@ -92,7 +94,7 @@ describe("conditionsFor", () => {
       return new Response("", { status: 429 });
     });
     const { incomplete } = await conditionsFor(spots);
-    expect(calls).toBe(3); // one per cell, no retries
+    expect(calls).toBe(2); // one per cell, no retries
     expect(incomplete.size).toBe(3);
   });
 });
