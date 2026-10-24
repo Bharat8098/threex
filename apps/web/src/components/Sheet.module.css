@@ -50,7 +50,7 @@
 
 .titleRow {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
 }
@@ -84,10 +84,24 @@
 }
 
 .panelHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: var(--space-5) var(--space-5) var(--space-3);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: var(--tap);
+  margin: calc(-1 * var(--space-2)) 0 0 calc(-1 * var(--space-2));
+  padding: 0 var(--space-2);
+  border: 0;
+  background: none;
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+
+.back svg {
+  font-size: 1.25em;
 }
 
 .panel .scroll {

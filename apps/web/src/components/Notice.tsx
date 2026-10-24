@@ -1,4 +1,5 @@
 import { CloudSlash, Export, X } from "@phosphor-icons/react";
+import { strings } from "../copy/strings.ts";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import styles from "./Notice.module.css";
 
@@ -23,7 +24,7 @@ export function OfflineBanner() {
   return (
     <div className={`glass ${styles.banner}`} role="status">
       <CloudSlash aria-hidden weight="bold" />
-      <span className="t-subheadline">Offline · showing saved forecasts</span>
+      <span className="t-subheadline">{strings.offline}</span>
     </div>
   );
 }
@@ -51,14 +52,16 @@ export function InstallHint({ force = false }: { force?: boolean }) {
     <div className={styles.hint} role="note">
       <Export aria-hidden className={styles.hintIcon} weight="bold" />
       <p className="t-subheadline">
-        <strong>Add ThreeX to your Home Screen</strong> for a full-screen app that works offline:
-        tap <span className={styles.key}>Share</span> then{" "}
-        <span className={styles.key}>Add to Home Screen</span>.
+        <strong>{strings.install.lead}</strong>
+        {strings.install.body}
+        <span className={styles.key}>{strings.install.share}</span>
+        {strings.install.then}
+        <span className={styles.key}>{strings.install.add}</span>.
       </p>
       <button
         type="button"
         className={styles.close}
-        aria-label="Dismiss"
+        aria-label={strings.install.dismiss}
         onClick={() => {
           sessionStorage.setItem(DISMISSED, "1");
           setShow(false);

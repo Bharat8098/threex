@@ -1,13 +1,37 @@
-// Screenshots of every page at iPhone and iPad sizes in light, dark, Increase Contrast and
-// Reduce Motion and the largest standard text size, plus the app offline. Needs a running dev server (npm run dev) and network for map tiles/weather.
-//   node apps/web/scripts/screenshots.mjs [baseUrl]
-import { mkdirSync } from "node:fs";
+// Screenshots of every screen at iPhone and iPad sizes in light, dark, Increase Contrast,
+// Reduce Motion and the largest standard text size, plus the app offline. Needs a running
+// dev server (npm run dev) and network for map tiles and weather.
+//   node apps/web/scripts/screenshots.mjs [baseUrl]      ONLY=detail-iphone,about limits it
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
 const base = process.argv[2] ?? "http://127.0.0.1:5173";
 const out = fileURLToPath(new URL("../screenshots/", import.meta.url));
 mkdirSync(out, { recursive: true });
+
+// Weather is recorded on first use and replayed for 6 hours: every page sees the same
+// conditions, and a full run makes a few dozen Open-Meteo requests instead of hundreds.
+const weather = `${out}.weather/`;
+mkdirSync(weather, { recursive: true });
+const recorded = (url) => weather + createHash("sha1").update(url).digest("hex");
+function replayWeather(route) {
+  const file = recorded(route.request().url());
+  if (existsSync(file) && Date.now() - statSync(file).mtimeMs < 6 * 3_600_000) {
+    return route.fulfill({
+      body: readFileSync(file),
+      contentType: "application/json",
+      headers: { "access-control-allow-origin": "*" },
+    });
+  }
+  return route.continue();
+}
+async function recordWeather(response) {
+  if (/open-meteo\.com/.test(response.url()) && response.ok()) {
+    writeFileSync(recorded(response.url()), await response.body().catch(() => ""));
+  }
+}
 
 const devices = {
   iphone: {
@@ -34,7 +58,61 @@ const modes = {
 // iOS's largest non-accessibility Text Size sets body text to 23 pt (Safari applies it through
 // `font: -apple-system-body`); Chromium can't, so the root size is raised to match.
 const LARGE_TEXT = "html { font-size: calc(23 / 16 * 100%) !important; }";
-const pages = { app: "/", gallery: "/gallery" };
+const SPOT_ROW = "[data-spot]";
+
+async function scored(tab, name) {
+  await tab
+    .waitForSelector(SPOT_ROW, { timeout: 60_000 })
+    .catch(() => console.log(`[${name}] no spots rendered`));
+  // Rows appear before scoring starts, so wait until no rating is pending and nothing is
+  // updating.
+  await tab
+    .waitForFunction(
+      () =>
+        !document.querySelector('[aria-label="Rating not ready yet"]') &&
+        !document.body.innerText.includes("Updating…"),
+      undefined,
+      { timeout: 90_000 },
+    )
+    .catch(() => console.log(`[${name}] still scoring`));
+}
+
+/** On phones, drag-free: the grabber steps the sheet up to full height. */
+async function expandSheet(tab) {
+  for (let i = 0; i < 2; i++) {
+    const grabber = tab.getByRole("button", { name: "Expand list" });
+    if (!(await grabber.count())) return;
+    await grabber.click();
+    await tab.waitForTimeout(500);
+  }
+}
+
+// Each page: where to start and how to get to the screen.
+const pages = {
+  app: { path: "/", go: scored },
+  detail: {
+    path: "/",
+    go: async (tab, name) => {
+      await scored(tab, name);
+      await tab.locator(SPOT_ROW).first().click();
+      await tab
+        .getByRole("heading", { name: "Why" })
+        .waitFor({ timeout: 60_000 })
+        .catch(() => console.log(`[${name}] detail not scored`));
+      await expandSheet(tab);
+    },
+  },
+  planner: {
+    path: "/",
+    go: async (tab, name) => {
+      await scored(tab, name);
+      await tab.getByRole("radio", { name: "This week" }).click();
+      await expandSheet(tab);
+    },
+  },
+  about: { path: "/about", go: expandSheet },
+  gallery: { path: "/gallery", go: () => {} },
+};
 const only = process.env.ONLY?.split(",");
 
 const proxy = process.env.HTTPS_PROXY
@@ -46,7 +124,7 @@ const browser = await chromium.launch({
 });
 for (const [device, deviceOptions] of Object.entries(devices)) {
   for (const [mode, modeOptions] of Object.entries(modes)) {
-    for (const [page, path] of Object.entries(pages)) {
+    for (const [page, { path, go }] of Object.entries(pages)) {
       const name = `${page}-${device}-${mode}`;
       if (only && !only.some((o) => name.includes(o))) continue;
       if (mode === "offline" && page !== "app") continue;
@@ -54,7 +132,11 @@ for (const [device, deviceOptions] of Object.entries(devices)) {
         ...deviceOptions,
         ...modeOptions,
         serviceWorkers: "block",
+        timezoneId: "Asia/Kolkata",
+        locale: "en-IN",
       });
+      await context.route(/open-meteo\.com/, replayWeather);
+      context.on("response", (response) => void recordWeather(response));
       const tab = await context.newPage();
       tab.on("pageerror", (e) => console.log(`[${name}] page error: ${e.message}`));
       if (mode === "large-text") {
@@ -70,20 +152,10 @@ for (const [device, deviceOptions] of Object.entries(devices)) {
         }, LARGE_TEXT);
       }
       await tab.goto(base + path);
-      if (page === "app") {
-        await tab
-          .waitForSelector('[id^="spot-"]', { timeout: 60_000 })
-          .catch(() => console.log(`[${name}] no spots rendered`));
-        // Wait for scoring to finish, then for the map to settle.
-        await tab
-          .getByText("Updating…")
-          .waitFor({ state: "hidden", timeout: 90_000 })
-          .catch(() => console.log(`[${name}] still scoring`));
-        if (mode === "offline") await context.setOffline(true);
-        await tab.waitForTimeout(2500);
-      } else {
-        await tab.waitForTimeout(800);
-      }
+      await go(tab, name);
+      if (mode === "offline") await context.setOffline(true);
+      // Let the map and any transition settle.
+      await tab.waitForTimeout(page === "gallery" ? 800 : 2500);
       const overflow = await tab.evaluate(
         () => document.documentElement.scrollWidth - window.innerWidth,
       );

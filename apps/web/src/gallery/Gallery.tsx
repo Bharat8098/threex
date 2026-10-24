@@ -3,7 +3,8 @@ import { useState } from "react";
 import { ChipGroup } from "../components/ChipGroup.tsx";
 import { GlassButton, GlassGroup } from "../components/GlassButton.tsx";
 import { InstallHint } from "../components/Notice.tsx";
-import { PillarMarks, RatingBadge, ratingLabel } from "../components/Rating.tsx";
+import { PillarMarks, RatingBadge } from "../components/Rating.tsx";
+import { strings } from "../copy/strings.ts";
 import { SpotRow } from "../components/SpotRow.tsx";
 import { useAppearance } from "../data/appearance.ts";
 import styles from "./Gallery.module.css";
@@ -91,7 +92,7 @@ export function Gallery() {
           {[3, 2, 1, 0].map((r) => (
             <span key={r} className={styles.rating}>
               <RatingBadge rating={r} size="l" />
-              <span className="t-caption1 secondary">{ratingLabel(r)}</span>
+              <span className="t-caption1 secondary">{strings.rating.label(r)}</span>
             </span>
           ))}
         </div>

@@ -1,0 +1,71 @@
+.grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--space-3);
+}
+
+.labels {
+  display: flex;
+  flex-direction: column;
+}
+
+.labels span {
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.plot {
+  min-width: 0;
+}
+
+.plot svg {
+  display: block;
+  overflow: visible;
+}
+
+.track {
+  fill: var(--fill-tertiary);
+}
+
+.r3 {
+  fill: var(--rating-3x-fill);
+  background: var(--rating-3x-fill);
+}
+
+.r2 {
+  fill: var(--rating-2x-fill);
+  background: var(--rating-2x-fill);
+}
+
+.low {
+  background: var(--fill-tertiary);
+}
+
+.tick {
+  font: var(--text-caption2);
+  fill: var(--label-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.legend {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--label-secondary);
+}
+
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}

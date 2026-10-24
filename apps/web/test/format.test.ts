@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDistance, formatWindow } from "../src/shell/format.ts";
+import { formatDistance, formatWindow } from "../src/copy/format.ts";
 
 describe("formatting", () => {
   it("formats distances", () => {

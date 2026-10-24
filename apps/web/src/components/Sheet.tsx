@@ -1,3 +1,4 @@
+import { CaretLeft } from "@phosphor-icons/react";
 import { animate, motion, useDragControls, useMotionValue, useReducedMotion } from "motion/react";
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { spring } from "../design/motion.ts";
@@ -17,9 +18,22 @@ export function peekPx(): number {
 interface Props {
   title: ReactNode;
   accessory?: ReactNode;
+  /** A back link above the title, labelled with where it goes ("‹ Near you"). */
+  back?: { label: string; onClick: () => void };
+  /** Scrolls back to the top whenever this changes (a new page in the sheet). */
+  page?: string;
   children: ReactNode;
   detent?: Detent;
   onDetentChange?: (detent: Detent) => void;
+}
+
+function BackLink({ label, onClick }: NonNullable<Props["back"]>) {
+  return (
+    <button type="button" className={styles.back} onClick={onClick}>
+      <CaretLeft aria-hidden weight="bold" />
+      <span className="t-body">{label}</span>
+    </button>
+  );
 }
 
 /**
@@ -30,6 +44,8 @@ interface Props {
 export function Sheet({
   title,
   accessory,
+  back,
+  page,
   children,
   detent: wanted = "peek",
   onDetentChange,
@@ -44,6 +60,7 @@ export function Sheet({
   const [top, setTop] = useState(64);
   const [peek, setPeek] = useState(196);
   const sheet = useRef<HTMLElement>(null);
+  const scroller = useRef<HTMLDivElement>(null);
   const [detent, setDetent] = useState<Detent>(wanted);
   const headerId = useRef(`sheet-${Math.random().toString(36).slice(2)}`).current;
 
@@ -71,7 +88,12 @@ export function Sheet({
     animate(y, offsets[next], reduced ? { duration: 0 } : spring.smooth);
   };
 
-  useEffect(() => setDetent(wanted), [wanted]);
+  useEffect(() => {
+    setDetent(wanted);
+  }, [wanted]);
+  useEffect(() => {
+    scroller.current?.scrollTo({ top: 0 });
+  }, [page]);
   useEffect(() => {
     if (!wide) animate(y, offsets[detent], reduced ? { duration: 0 } : spring.smooth);
   }, [detent, height, peek, wide]);
@@ -80,12 +102,17 @@ export function Sheet({
     return (
       <aside className={styles.panel} aria-labelledby={headerId}>
         <header className={styles.panelHeader}>
-          <h2 id={headerId} className="t-title2">
-            {title}
-          </h2>
-          {accessory}
+          {back && <BackLink {...back} />}
+          <div className={styles.titleRow}>
+            <h2 id={headerId} className="t-title2">
+              {title}
+            </h2>
+            {accessory}
+          </div>
         </header>
-        <div className={styles.scroll}>{children}</div>
+        <div ref={scroller} className={styles.scroll}>
+          {children}
+        </div>
       </aside>
     );
   }
@@ -123,6 +150,7 @@ export function Sheet({
           aria-expanded={detent !== "peek"}
           onClick={() => step(detent === "full" ? -1 : 1)}
         />
+        {back && <BackLink {...back} />}
         <div className={styles.titleRow}>
           <h2 id={headerId} className="t-title3">
             {title}
@@ -130,7 +158,7 @@ export function Sheet({
           {accessory}
         </div>
       </header>
-      <div className={styles.scroll} data-detent={detent}>
+      <div ref={scroller} className={styles.scroll} data-detent={detent}>
         {children}
       </div>
     </motion.section>

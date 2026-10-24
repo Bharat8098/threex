@@ -83,4 +83,16 @@ describe("conditionsFor", () => {
     expect(fortKochi.waveHeightM).toBeUndefined();
     expect(fortKochi.windSpeedMs).toBeDefined();
   });
+
+  it("doesn't retry when rate limited", async () => {
+    let calls = 0;
+    vi.stubGlobal("fetch", async (url: string) => {
+      if (!url.startsWith("https://api.open-meteo.com/v1/forecast")) return reply(url);
+      calls++;
+      return new Response("", { status: 429 });
+    });
+    const { incomplete } = await conditionsFor(spots);
+    expect(calls).toBe(3); // one per cell, no retries
+    expect(incomplete.size).toBe(3);
+  });
 });

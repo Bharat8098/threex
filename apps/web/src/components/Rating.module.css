@@ -58,6 +58,12 @@
   font-size: 15px;
 }
 
+.large {
+  width: 36px;
+  height: 36px;
+  font-size: 22px;
+}
+
 .comfort.earned {
   color: var(--comfort-ink);
 }

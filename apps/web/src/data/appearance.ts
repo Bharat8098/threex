@@ -1,7 +1,8 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 
 export type Appearance = "system" | "light" | "dark";
-const KEY = "threex-appearance";
+export const APPEARANCE_KEY = "threex-appearance";
+const KEY = APPEARANCE_KEY;
 const ORDER: Appearance[] = ["system", "light", "dark"];
 
 function read(): Appearance {

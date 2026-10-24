@@ -1,0 +1,62 @@
+.chart {
+  width: 100%;
+}
+
+.chart svg {
+  display: block;
+  overflow: visible;
+}
+
+.night {
+  fill: var(--fill-tertiary);
+}
+
+.area {
+  fill: color-mix(in srgb, var(--comfort-fill) 18%, transparent);
+}
+
+.curve {
+  fill: none;
+  stroke: var(--comfort-ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.dot {
+  fill: var(--comfort-ink);
+  stroke: var(--bg-elevated);
+  stroke-width: 1.5;
+}
+
+.eventLabel,
+.tick {
+  font: var(--text-caption2);
+  fill: var(--label-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.eventLabel {
+  fill: var(--label);
+}
+
+.track {
+  fill: var(--fill-tertiary);
+}
+
+.r3 {
+  fill: var(--rating-3x-fill);
+}
+
+.r2 {
+  fill: var(--rating-2x-fill);
+}
+
+.low {
+  fill: var(--fill-tertiary);
+}
+
+.now {
+  stroke: var(--label);
+  stroke-width: 2;
+  stroke-linecap: round;
+}

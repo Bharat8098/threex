@@ -22,14 +22,25 @@ export function cellOf(spot: Spot): { key: string; lat: number; lon: number } {
 
 const PARALLEL = 4;
 
+class HttpError extends Error {
+  readonly status: number;
+  constructor(status: number) {
+    super(`Open-Meteo: HTTP ${status}`);
+    this.status = status;
+  }
+}
+
+/** Retries network failures and server errors with backoff. A 4xx (including 429, rate
+ * limited) is not retried: asking again straight away only makes it worse. */
 async function getJson(url: string, attempts = 3): Promise<unknown> {
   for (let attempt = 1; ; attempt++) {
     try {
       const response = await fetch(url);
-      if (!response.ok) throw new Error(`Open-Meteo: HTTP ${response.status}`);
+      if (!response.ok) throw new HttpError(response.status);
       return await response.json();
     } catch (error) {
-      if (attempt >= attempts) throw error;
+      const clientError = error instanceof HttpError && error.status < 500;
+      if (clientError || attempt >= attempts) throw error;
       await new Promise((resolve) => setTimeout(resolve, 1500 * attempt));
     }
   }
