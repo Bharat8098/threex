@@ -10,14 +10,14 @@
   "tiles": [
     {
       "geohash": "t9y0",
-      "path": "tiles/t9y0.4078d2b769e4.json",
-      "sha256": "4078d2b769e476101ccc69bac5bd7fae05bd193beff27fff058bd78cb7cd7a27",
+      "path": "tiles/t9y0.2a1e393c1da9.json",
+      "sha256": "2a1e393c1da99b8677f37073d1b817d011ef2d85a3f75b52980ed3ebe60d1f89",
       "spotCount": 2
     },
     {
       "geohash": "t9y3",
-      "path": "tiles/t9y3.b18c3431b0d6.json",
-      "sha256": "b18c3431b0d69b2162e3545cd72205c2c37848bbc9763c7cb5ad0f8942490ec5",
+      "path": "tiles/t9y3.9392cb62b718.json",
+      "sha256": "9392cb62b7189d172884ba741f290ccb4cbbf92a2768fa70da8cd310f625d0e2",
       "spotCount": 1
     }
   ],
@@ -52,12 +52,12 @@
       "displayRequired": false
     },
     {
-      "id": "gebco",
-      "name": "GEBCO gridded bathymetry",
-      "license": "GEBCO grid terms of use",
-      "url": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/",
-      "text": "Bathymetry: GEBCO Compilation Group, GEBCO Grid",
-      "displayRequired": true
+      "id": "etopo2022",
+      "name": "ETOPO 2022 global relief model (NOAA NCEI)",
+      "license": "Public domain (U.S. Government work)",
+      "url": "https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+      "text": "Depth: NOAA NCEI ETOPO 2022",
+      "displayRequired": false
     },
     {
       "id": "gmw",
@@ -72,7 +72,7 @@
       "name": "NOAA CoastWatch ERDDAP",
       "license": "Public domain (U.S. Government work)",
       "url": "https://coastwatch.pfeg.noaa.gov/erddap/",
-      "text": "Sea temperature and chlorophyll: NOAA CoastWatch",
+      "text": "Sea temperature (MUR, NASA JPL) and chlorophyll (MODIS Aqua, NASA) via NOAA CoastWatch",
       "displayRequired": false
     }
   ]

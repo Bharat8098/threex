@@ -51,7 +51,7 @@ Every signal turns into a number in its own unit. The engine skips any signal wi
 | `lightLevel` | 0–1 | sun altitude × (1 − cloud cover) | dim: dawn, dusk, overcast, night |
 | `windSpeed` | m/s | Open-Meteo Forecast, 10 m wind | a breeze that aerates the water, not a gale |
 | `waveHeight` | m | Open-Meteo Marine significant wave height | calm to moderate |
-| `dischargeRatio` | ratio | Open-Meteo Flood river discharge ÷ the spot's median | near normal flow (freshwater) |
+| `dischargeRatio` | ratio | Open-Meteo Flood river discharge ÷ the spot's `river.dischargeMedianCumecs` | near normal flow (freshwater) |
 
 ### Safety
 
@@ -66,7 +66,7 @@ Every signal turns into a number in its own unit. The engine skips any signal wi
 | Signal | Unit | Computed from | Good when |
 |---|---|---|---|
 | `nurseryHabitat` | 0–1 | distance to mangroves, reef, weed beds and river mouths | nursery habitat close by |
-| `chlorophyll` | mg/m³ | recent chlorophyll-a (ERDDAP), via the pipeline | productive water |
+| `chlorophyll` | mg/m³ | the spot's chlorophyll-a normal for the current month (`habitat.chlorophyllNormalMgM3`, MODIS, via the pipeline) | productive water |
 | `tideMovement` | 0–1 | 1 in the first two hours after a high or low, falling to 0 at the turn | tide just started moving |
 | `lowLightFeeding` | 0–1 | 1 within the dawn and dusk windows, falling off either side | dawn or dusk |
 | `pressureTrend` | hPa / 3 h | Open-Meteo Forecast surface pressure | gently falling |

@@ -23,9 +23,10 @@ def find_events(start: datetime, step_minutes: int, heights_cm: list[int]) -> li
         curvature = before - 2 * here + after
         offset = 0.5 * (before - after) / curvature if curvature else 0.0
         peak = here - 0.25 * (before - after) * offset
+        minutes = round((i + offset) * step_minutes)
         events.append(
             TideEvent(
-                time=start + timedelta(minutes=(i + offset) * step_minutes),
+                time=start + timedelta(minutes=minutes),
                 kind=kind,
                 height_cm=round(peak),
             )

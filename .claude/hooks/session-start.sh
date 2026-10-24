@@ -13,3 +13,8 @@ npm install --no-audit --no-fund
 
 # Python pipeline: creates pipeline/.venv from uv.lock.
 (cd pipeline && uv sync)
+
+# osmium-tool clips and filters OpenStreetMap extracts for `threex-compile build`.
+if ! command -v osmium >/dev/null 2>&1; then
+  apt-get update -qq && apt-get install -y -qq osmium-tool
+fi

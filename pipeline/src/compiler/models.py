@@ -104,8 +104,11 @@ class Habitat(Contract):
     reef_m: Metres | None = None
     weed_bed_m: Metres | None = None
     river_mouth_m: Metres | None = None
-    chlorophyll_mg_m3: float | None = Field(
-        default=None, ge=0, description="Recent chlorophyll-a composite (mg/m³)."
+    chlorophyll_normal_mg_m3: list[float] | None = Field(
+        default=None,
+        min_length=12,
+        max_length=12,
+        description="Monthly chlorophyll-a normals in mg/m³, January to December.",
     )
     sst_normal_c: list[float] | None = Field(
         default=None,
@@ -116,8 +119,8 @@ class Habitat(Contract):
 
 
 class River(Contract):
-    discharge_median_m3s: float = Field(
-        gt=0, description="Median river discharge (m³/s), the baseline for flow comfort."
+    discharge_median_cumecs: float = Field(
+        gt=0, description="Median river discharge in m³/s, the baseline for flow comfort."
     )
 
 

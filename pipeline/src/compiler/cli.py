@@ -2,6 +2,7 @@
 
 import filecmp
 import tempfile
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
 
@@ -14,6 +15,9 @@ from compiler.schema import render_schema
 
 app = typer.Typer(no_args_is_help=True, help="Compile public data into the ThreeX catalogue.")
 
+RegionOption = Annotated[
+    str, typer.Option("--region", help="Region config name in config/regions/.")
+]
 CheckOption = Annotated[
     bool, typer.Option("--check", help="Fail instead of writing if the committed copy is stale.")
 ]
@@ -74,3 +78,38 @@ def validate(
         return
     spots = sum(len(tile.spots) for tile in catalogue.tiles)
     typer.echo(f"OK: {len(catalogue.tiles)} tiles, {spots} spots, data {catalogue.data_version}.")
+
+
+@app.command()
+def fetch(region: RegionOption = "kochi") -> None:
+    """Download (or reuse cached) inputs for a region."""
+    from compiler.inputs import gather
+    from compiler.regions import load_region
+
+    gather(load_region(region), log=typer.echo)
+    typer.echo("Inputs ready.")
+
+
+@app.command()
+def build(
+    region: RegionOption = "kochi",
+    out: Annotated[Path, typer.Option("--out", help="Output directory.")] = Path("build"),
+) -> None:
+    """Fetch inputs, compile the region's catalogue into <out>/v1, and write a report."""
+    from compiler.build import build_catalogue
+    from compiler.inputs import gather
+    from compiler.regions import load_region
+    from compiler.report import write_geojson, write_report
+    from compiler.sources.glofas import median_discharge
+
+    config = load_region(region)
+    inputs = gather(config, log=typer.echo)
+    catalogue, report = build_catalogue(
+        config, inputs, now=datetime.now(UTC), discharge=median_discharge, log=typer.echo
+    )
+    manifest = write_catalogue(catalogue, out)
+    read_catalogue(out)  # re-validate what was written
+    write_report(report, out / "report")
+    write_geojson(report, out / "report")
+    spots = sum(t.spot_count for t in manifest.tiles)
+    typer.echo(f"Wrote {out / VERSION_DIR}: {len(manifest.tiles)} tiles, {spots} spots.")

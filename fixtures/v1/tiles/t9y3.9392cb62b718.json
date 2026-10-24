@@ -30,7 +30,7 @@
         "weedBedM": 40.0
       },
       "river": {
-        "dischargeMedianM3S": 220.0
+        "dischargeMedianCumecs": 220.0
       },
       "confidence": 0.5,
       "sources": [

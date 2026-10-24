@@ -17,13 +17,14 @@ Cloud and local sessions draw from the same Claude plan usage, and the cloud VM 
 ## Commands
 
 ```sh
-# Pipeline (Python 3.12+, uv)
+# Pipeline (Python 3.12+, uv; `build` also needs osmium-tool)
 cd pipeline
 uv sync                                # install
-uv run pytest                          # tests
+uv run pytest                          # tests (offline; no downloads)
 uv run ruff check . && uv run ruff format --check .
 uv run threex-compile schema           # models.py → schema/v1/threex.schema.json
 uv run threex-compile fixtures         # regenerate fixtures/v1 (synthetic Kochi catalogue)
+uv run threex-compile build --region kochi --out build   # real data → build/v1 + build/report
 uv run threex-compile validate <dir>   # check a published catalogue
 
 # TypeScript (Node 22+, npm workspaces)
@@ -55,11 +56,11 @@ In the session title bar, open the environment menu → **Edit**.
    - Output directory: `apps/web/dist`
 
    Every branch and PR gets a preview URL; `main` deploys to `threex.pages.dev`. *(Needed from M3, once the web app exists.)*
-2. Create a Pages project **`threex-data`** for direct upload. The weekly `compile-data` workflow deploys the catalogue to it. *(Needed from M1.)*
+2. Create a Pages project **`threex-data`** for direct upload. The weekly `compile-data` workflow deploys the catalogue to it (with `pipeline/publish/_headers` for CORS and caching). Until the secrets below exist, the workflow still builds and uploads the catalogue as a run artifact.
 3. Create an API token with *Cloudflare Pages: Edit*. Add it, and your account ID, as GitHub Actions secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 
 ### Data inputs
-None need an account. The pipeline downloads every input (OSM extract, EOT20 tide grids, GEBCO, mangroves, ERDDAP, UHSLC) into `pipeline/.cache/`, so anyone can rebuild the catalogue from a fresh clone. See [data-sources.md](data-sources.md).
+None need an account. The pipeline downloads every input (OSM extract, EOT20 tide grids, ETOPO, mangroves, ERDDAP climatologies, UHSLC, GloFAS) into `pipeline/.cache/`, so anyone can rebuild the catalogue from a fresh clone. See [data-sources.md](data-sources.md) and [pipeline.md](pipeline.md).
 
 ## Branches and PRs
 

@@ -160,9 +160,9 @@ export interface Habitat {
   weedBedM?: number | null;
   riverMouthM?: number | null;
   /**
-   * Recent chlorophyll-a composite (mg/m³).
+   * Monthly chlorophyll-a normals in mg/m³, January to December.
    */
-  chlorophyllMgM3?: number | null;
+  chlorophyllNormalMgM3?: number[] | null;
   /**
    * Monthly sea-surface temperature normals in °C, January to December.
    */
@@ -170,9 +170,9 @@ export interface Habitat {
 }
 export interface River {
   /**
-   * Median river discharge (m³/s), the baseline for flow comfort.
+   * Median river discharge in m³/s, the baseline for flow comfort.
    */
-  dischargeMedianM3S: number;
+  dischargeMedianCumecs: number;
 }
 /**
  * Predicted tide heights shared by every spot in a tide cluster.

@@ -217,19 +217,23 @@
           "default": null,
           "title": "Rivermouthm"
         },
-        "chlorophyllMgM3": {
+        "chlorophyllNormalMgM3": {
           "anyOf": [
             {
-              "minimum": 0,
-              "type": "number"
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 12,
+              "minItems": 12,
+              "type": "array"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Recent chlorophyll-a composite (mg/m³).",
-          "title": "Chlorophyllmgm3"
+          "description": "Monthly chlorophyll-a normals in mg/m³, January to December.",
+          "title": "Chlorophyllnormalmgm3"
         },
         "sstNormalC": {
           "anyOf": [
@@ -416,15 +420,15 @@
     "River": {
       "additionalProperties": false,
       "properties": {
-        "dischargeMedianM3S": {
-          "description": "Median river discharge (m³/s), the baseline for flow comfort.",
+        "dischargeMedianCumecs": {
+          "description": "Median river discharge in m³/s, the baseline for flow comfort.",
           "exclusiveMinimum": 0,
-          "title": "Dischargemedianm3S",
+          "title": "Dischargemediancumecs",
           "type": "number"
         }
       },
       "required": [
-        "dischargeMedianM3S"
+        "dischargeMedianCumecs"
       ],
       "title": "River",
       "type": "object"
