@@ -104,7 +104,7 @@ def _coastal_tile(tides: TideSeries) -> Tile:
             ),
             tide_cluster_id=tides.id,
             confidence=0.8,
-            sources=["osm", "fes2022", "gebco", "gmw", "coastwatch"],
+            sources=["osm", "eot20", "gebco", "gmw", "coastwatch"],
         ),
         Spot(
             id=_spot_id(*mangroves),
@@ -130,7 +130,7 @@ def _coastal_tile(tides: TideSeries) -> Tile:
             ),
             tide_cluster_id=tides.id,
             confidence=0.6,
-            sources=["osm", "fes2022", "gebco", "gmw", "coastwatch"],
+            sources=["osm", "eot20", "gebco", "gmw", "coastwatch"],
         ),
     ]
     return Tile(
@@ -173,7 +173,7 @@ def _freshwater_tile() -> Tile:
 
 def build_fixture_catalogue() -> Catalogue:
     tides = _kochi_mouth_tides()
-    used = ["osm", "fes2022", "uhslc", "gebco", "gmw", "coastwatch"]
+    used = ["osm", "eot20", "uhslc", "gebco", "gmw", "coastwatch"]
     return Catalogue(
         data_version=DATA_VERSION,
         region=Region(id="in-kochi-fixture", name="Kochi pilot (synthetic fixture)"),

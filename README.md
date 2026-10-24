@@ -39,7 +39,7 @@ npm ci && npm run typecheck && npm test
 ## Roadmap
 
 1. **M0, foundations:** contract, docs, CI. ✅
-2. **M1, pipeline v0:** Kochi pilot spots, FES2022 tides validated against the Cochin gauge.
+2. **M1, pipeline v0:** Kochi pilot spots, EOT20 tides validated against the Cochin gauge.
 3. **M2, `@threex/core`:** the 3X scoring engine, tide-flip analysis and the window planner.
 4. **M3, app shell:** PWA, design system, map and offline cache.
 5. **M4, screens:** map, spot detail, best-times planner, about & data.

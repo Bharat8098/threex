@@ -58,10 +58,8 @@ In the session title bar, open the environment menu → **Edit**.
 2. Create a Pages project **`threex-data`** for direct upload. The weekly `compile-data` workflow deploys the catalogue to it. *(Needed from M1.)*
 3. Create an API token with *Cloudflare Pages: Edit*. Add it, and your account ID, as GitHub Actions secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 
-### AVISO+ (FES2022 tides)
-1. Register at AVISO+ and accept the FES licence.
-2. Download the India-region subset of the FES2022 ocean-tide grids once, wherever FTP works (for example on your Mac).
-3. Attach it as a release asset on a **private** repository. The FES licence doesn't allow redistribution, and `threex` is public.
+### Data inputs
+None need an account. The pipeline downloads every input (OSM extract, EOT20 tide grids, GEBCO, mangroves, ERDDAP, UHSLC) into `pipeline/.cache/`, so anyone can rebuild the catalogue from a fresh clone. See [data-sources.md](data-sources.md).
 
 ## Branches and PRs
 

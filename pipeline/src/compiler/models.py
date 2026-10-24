@@ -177,7 +177,7 @@ class TideSeries(Contract):
     """Predicted tide heights shared by every spot in a tide cluster."""
 
     id: Id
-    model: str = Field(description="Tide model used for the prediction, e.g. FES2022b.")
+    model: str = Field(description="How the series was predicted, e.g. eot20 or uhslc-harmonics.")
     datum: Literal["MSL"]
     start: AwareDatetime
     step_minutes: int = Field(gt=0, le=60)

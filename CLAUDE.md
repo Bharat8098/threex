@@ -39,4 +39,4 @@ npm ci && npm run gen:types && npm run typecheck && npm test
 ## Environment
 
 - Cloud sessions run on Linux. The data hosts must be allowed in the environment's network settings; see `docs/data-sources.md`.
-- Never commit large or licence-bound inputs (`*.osm.pbf`, `*.nc`, FES grids). The repo is **public**.
+- ThreeX is **open source**. Every data input must be openly licensed and downloadable without an account. Never commit large inputs (`*.osm.pbf`, `*.nc`, tide-model grids); the pipeline downloads them into `pipeline/.cache/`.
