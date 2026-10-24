@@ -1,0 +1,27 @@
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+playwright-report/
+test-results/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Pipeline inputs and outputs (large, licence-bound, or regenerated)
+pipeline/.cache/
+pipeline/build/
+*.osm.pbf
+*.nc
+*.tif
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
