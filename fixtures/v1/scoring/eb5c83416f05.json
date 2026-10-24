@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "waterTypes": {
     "coastal": {
       "comfort": {
@@ -113,19 +113,13 @@
       "comfort": {
         "combine": "geometric",
         "threshold": 0.6,
-        "minCoverage": 0.5,
+        "minCoverage": 0.65,
         "signals": {
           "tidalFlow": {
             "weight": 2.0,
             "idealMin": 0.0,
             "idealMax": 30.0,
             "falloff": 30.0
-          },
-          "currentSpeed": {
-            "weight": 1.0,
-            "idealMin": 0.0,
-            "idealMax": 0.5,
-            "falloff": 0.4
           },
           "waterTempAnomaly": {
             "weight": 1.5,

@@ -20,7 +20,7 @@ Ratings change through the day as the tide, light and weather change. A spot is 
 
 **The rating is absolute, and ThreeX is exhaustive.** Each pillar earns its X by clearing a fixed threshold, never by comparison with other spots. If thirty spots in an area are 3X at dawn, all thirty are shown as 3X: an angler wants to know every place that could fish well, not a shortlist. Thresholds are tuned against what fish need (the scenarios and real data below), never to make 3X rarer. Ranking only orders lists, and the app lists every spot within reach.
 
-> **Status: v0.3** (scoring config `0.3.0`). The model is tuned against the golden scenarios in `packages/core/test/scenarios.test.ts` and checked against live Kochi data (see the *Tuning log* below). Thresholds and weights live in `config/scoring-config.json` and are published with the data, so the model can be retuned without shipping a new app.
+> **Status: v0.4** (scoring config `0.4.0`). The model is tuned against the golden scenarios in `packages/core/test/scenarios.test.ts` and checked against live Kochi data (see the *Tuning log* below). Thresholds and weights live in `config/scoring-config.json` and are published with the data, so the model can be retuned without shipping a new app.
 
 ---
 
@@ -48,8 +48,8 @@ Each signal produces a number in its own unit, or *no data* for that moment.
 | Signal | Unit | How it is computed | Good when |
 |---|---|---|---|
 | `tidalFlow` | cm/h | absolute rate of tide change, from the tide series. Absolute rather than relative, so big-tide coasts (Gujarat) are penalised and Kerala's gentle tides are not | below about 30 cm/h |
-| `currentSpeed` | m/s | Open-Meteo Marine ocean current (converted from km/h) | gentle |
-| `waterTempAnomaly` | °C | Open-Meteo Marine SST − the spot's normal for the month | at or below normal; cooler is better in Indian waters |
+| `currentSpeed` | m/s | Open-Meteo Marine ocean current (converted from km/h). **Coastal only:** Marine answers an inland point from the nearest sea cell, so at a backwater spot this would be the offshore current | gentle |
+| `waterTempAnomaly` | °C | Open-Meteo Marine SST − the spot's normal for the month. At an estuary spot both come from the nearby coastal sea, so this is the regional sea anomaly, not the backwater's own temperature | at or below normal; cooler is better in Indian waters |
 | `lightLevel` | 0–1 | 0 below −6° sun altitude; up to 0.1 at sunrise; then sin(altitude) ÷ sin 60° (capped at 1); all × (1 − 0.75 × cloud cover) | dim: dawn, dusk, overcast, night |
 | `windSpeed` | m/s | Open-Meteo Forecast, 10 m wind | a breeze that aerates the water, not a gale |
 | `waveHeight` | m | Open-Meteo Marine significant wave height | calm to moderate |
@@ -80,6 +80,7 @@ Sun and moon times come from [suncalc](https://github.com/mourner/suncalc) (BSD-
 ### Water types
 
 - **Freshwater** has no tide signals and uses `dischargeRatio`.
+- **Estuaries** use neither `currentSpeed` nor `waveHeight`. Open-Meteo Marine has no cells in the backwaters and answers from the nearest sea cell, so both would describe the sea outside; `tidalFlow` carries the flow. Comfort's `minCoverage` is 0.65, so with no weather at all (only `tidalFlow` and `lightLevel`) Comfort stays unknown.
 - **Estuaries** count any clearly moving tide toward Food (`tideMovement` ideal 0.4–1; coastal is 0.7–1). In estuaries the flooding itself lets fish into the mangroves, so a mangrove edge fishes late in the flood, not just early.
 
 `config/scoring-config.json` is the authority. The pipeline rejects a config that gives a pillar a signal from another pillar.
@@ -152,3 +153,4 @@ The core is pure: the app fetches, using the URL builders, which always use spot
 | 0.1.0 | first guesses | — |
 | 0.2.0 | Comfort combines geometrically; `tidalFlow` becomes absolute cm/h; Food triggers weigh more than static habitat | bright, warm, slack middays were passing Comfort; relative flow penalised every mid-tide; Food passed on habitat alone |
 | 0.3.0 | `structureCover` + `vegetationCover` merge into `cover`; Safety threshold 0.65; Food threshold 0.65; tighter coastal `tideMovement`; night feeding 0.3 | on live Kochi data, bridges and mangrove edges could never earn Safety, and the breakwater was 3X 78% of the week. It is now about 42% at a strong breakwater, 24% at a mangrove edge, and 11% at a bridge on a river in spate |
+| 0.4.0 | estuary Comfort drops `currentSpeed`; estuary Comfort `minCoverage` 0.65 | Open-Meteo Marine has no backwater cells. All 141 Kochi estuary spots are answered by 7 coastal cells 1.1–19.2 km away (median 7.5 km), so `currentSpeed` was the offshore current. It stayed under 0.36 m/s through 2023–2025, so it scored a constant 1 that only lifted the geometric mean; `tidalFlow` already carries the backwater's flow. Separately, `tidalFlow` and `lightLevel` alone gave an estuary 54% coverage, so it could earn Comfort with no weather at all; at 0.65 it is unknown, as for the other water types. `waterTempAnomaly` stays: each spot's MUR baseline is within 0.09 °C of the normal at its Marine cell in every month, so it compares sea with sea. On live data for the week from 24 October, estuary 3X falls from 46.4% to 44.4% of steps: 47.7% → 47.4% where there is weather, and 27.4% → 0 where there is none. Coastal is unchanged |

@@ -142,6 +142,23 @@ describe("Vypin Mangrove Edge", () => {
     expect(window.tidePhase).toBe("rising");
     expect(findWindows(forecast, config)).toContainEqual(window);
   });
+
+  // Open-Meteo Marine answers a backwater spot from the nearest sea cell, so its current is
+  // the offshore current, not the backwater's. Estuary Comfort reads flow from the tide.
+  it("keeps the same Comfort at dusk when the offshore current runs strong", () => {
+    const at = "2026-11-01T12:30:00Z";
+    const strong = { ...weather, ...conditions({ currentSpeedMs: 1.5 }, FROM, HOURS) };
+    const calm = score("Vypin Mangrove Edge", eveningTide, weather, at);
+    const s = score("Vypin Mangrove Edge", eveningTide, strong, at);
+    expect(s.pillars.comfort.score).toBe(calm.pillars.comfort.score);
+    expect(s.pillars.comfort.status).toBe("earned");
+  });
+
+  it("can't earn Comfort without weather data", () => {
+    const s = score("Vypin Mangrove Edge", eveningTide, {}, "2026-11-01T12:30:00Z");
+    expect(s.pillars.comfort.status).toBe("unknown");
+    expect(s.pillars.comfort.earned).toBe(false);
+  });
 });
 
 describe("Periyar at Aluva Manalpuram (freshwater)", () => {
