@@ -1,0 +1,23 @@
+{
+  "name": "@threex/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ThreeX data contract types and the 3X scoring engine. Pure TypeScript, no DOM.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "gen:types": "node scripts/gen-types.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "json-schema-to-typescript": "^16.0.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}

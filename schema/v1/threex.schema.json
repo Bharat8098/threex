@@ -1,0 +1,971 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:threex:schema:v1",
+  "$defs": {
+    "Attribution": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "license": {
+          "title": "License",
+          "type": "string"
+        },
+        "url": {
+          "pattern": "^https://\\S+$",
+          "title": "Url",
+          "type": "string"
+        },
+        "text": {
+          "description": "Credit line to show in the app.",
+          "title": "Text",
+          "type": "string"
+        },
+        "displayRequired": {
+          "title": "Displayrequired",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "license",
+        "url",
+        "text",
+        "displayRequired"
+      ],
+      "title": "Attribution",
+      "type": "object"
+    },
+    "Band": {
+      "additionalProperties": false,
+      "description": "Trapezoid membership: 1 inside [idealMin, idealMax], falling linearly to 0 over\n`falloff` on either side. A falloff of 0 makes the band a hard yes/no.",
+      "properties": {
+        "weight": {
+          "exclusiveMinimum": 0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "idealMin": {
+          "title": "Idealmin",
+          "type": "number"
+        },
+        "idealMax": {
+          "title": "Idealmax",
+          "type": "number"
+        },
+        "falloff": {
+          "minimum": 0,
+          "title": "Falloff",
+          "type": "number"
+        }
+      },
+      "required": [
+        "weight",
+        "idealMin",
+        "idealMax",
+        "falloff"
+      ],
+      "title": "Band",
+      "type": "object"
+    },
+    "Coordinate": {
+      "additionalProperties": false,
+      "properties": {
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "Coordinate",
+      "type": "object"
+    },
+    "Feature": {
+      "additionalProperties": false,
+      "description": "A physical feature near a spot that can shelter fish.",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/FeatureKind"
+        },
+        "distanceM": {
+          "minimum": 0,
+          "title": "Distancem",
+          "type": "number"
+        },
+        "minTideCm": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tide height (cm, in the spot's tide-series datum) at or above which the feature holds fish, e.g. a mangrove edge that floods only near high tide. Omitted when the feature works at any tide.",
+          "title": "Mintidecm"
+        },
+        "source": {
+          "description": "Attribution id of the dataset the feature came from.",
+          "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "distanceM",
+        "source"
+      ],
+      "title": "Feature",
+      "type": "object"
+    },
+    "FeatureKind": {
+      "enum": [
+        "pier",
+        "breakwater",
+        "groyne",
+        "jetty",
+        "rocks",
+        "reef",
+        "wreck",
+        "bridgePilings",
+        "weir",
+        "dam",
+        "dropOff",
+        "channelEdge",
+        "riverMouth",
+        "confluence",
+        "mangroveEdge",
+        "weedBed"
+      ],
+      "title": "FeatureKind",
+      "type": "string"
+    },
+    "Habitat": {
+      "additionalProperties": false,
+      "description": "Distances to food-producing habitat, plus productivity normals.",
+      "properties": {
+        "mangroveM": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mangrovem"
+        },
+        "reefM": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reefm"
+        },
+        "weedBedM": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Weedbedm"
+        },
+        "riverMouthM": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rivermouthm"
+        },
+        "chlorophyllMgM3": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Recent chlorophyll-a composite (mg/m³).",
+          "title": "Chlorophyllmgm3"
+        },
+        "sstNormalC": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 12,
+              "minItems": 12,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Monthly sea-surface temperature normals in °C, January to December.",
+          "title": "Sstnormalc"
+        }
+      },
+      "title": "Habitat",
+      "type": "object"
+    },
+    "Manifest": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "dataVersion": {
+          "pattern": "^[0-9a-z][0-9a-z.-]{0,39}$",
+          "title": "Dataversion",
+          "type": "string"
+        },
+        "region": {
+          "$ref": "#/$defs/Region"
+        },
+        "generatedAt": {
+          "format": "date-time",
+          "title": "Generatedat",
+          "type": "string"
+        },
+        "validUntil": {
+          "description": "Tide predictions run out after this; the app warns when data is older.",
+          "format": "date-time",
+          "title": "Validuntil",
+          "type": "string"
+        },
+        "tiles": {
+          "items": {
+            "$ref": "#/$defs/TileRef"
+          },
+          "title": "Tiles",
+          "type": "array"
+        },
+        "scoring": {
+          "$ref": "#/$defs/ScoringRef"
+        },
+        "attributions": {
+          "items": {
+            "$ref": "#/$defs/Attribution"
+          },
+          "title": "Attributions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "dataVersion",
+        "region",
+        "generatedAt",
+        "validUntil",
+        "tiles",
+        "scoring",
+        "attributions"
+      ],
+      "title": "Manifest",
+      "type": "object"
+    },
+    "PillarScoring": {
+      "additionalProperties": false,
+      "properties": {
+        "threshold": {
+          "description": "Score at or above which the pillar earns its X.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Threshold",
+          "type": "number"
+        },
+        "minCoverage": {
+          "description": "Share of total signal weight that must have data, else the pillar is unknown.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Mincoverage",
+          "type": "number"
+        },
+        "signals": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Band"
+          },
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/SignalId"
+          },
+          "title": "Signals",
+          "type": "object"
+        }
+      },
+      "required": [
+        "threshold",
+        "minCoverage",
+        "signals"
+      ],
+      "title": "PillarScoring",
+      "type": "object"
+    },
+    "PlannerScoring": {
+      "additionalProperties": false,
+      "properties": {
+        "horizonHours": {
+          "maximum": 240,
+          "minimum": 1,
+          "title": "Horizonhours",
+          "type": "integer"
+        },
+        "minWindowMinutes": {
+          "minimum": 0,
+          "title": "Minwindowminutes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "horizonHours",
+        "minWindowMinutes"
+      ],
+      "title": "PlannerScoring",
+      "type": "object"
+    },
+    "RatingScoring": {
+      "additionalProperties": false,
+      "properties": {
+        "recommendedMinX": {
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Recommendedminx",
+          "type": "integer"
+        },
+        "worthALookMinX": {
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Worthalookminx",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "recommendedMinX",
+        "worthALookMinX"
+      ],
+      "title": "RatingScoring",
+      "type": "object"
+    },
+    "Region": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Region",
+      "type": "object"
+    },
+    "River": {
+      "additionalProperties": false,
+      "properties": {
+        "dischargeMedianM3S": {
+          "description": "Median river discharge (m³/s), the baseline for flow comfort.",
+          "exclusiveMinimum": 0,
+          "title": "Dischargemedianm3S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "dischargeMedianM3S"
+      ],
+      "title": "River",
+      "type": "object"
+    },
+    "ScoringConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "version": {
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "title": "Version",
+          "type": "string"
+        },
+        "waterTypes": {
+          "$ref": "#/$defs/WaterTypes"
+        },
+        "structure": {
+          "$ref": "#/$defs/StructureScoring"
+        },
+        "rating": {
+          "$ref": "#/$defs/RatingScoring"
+        },
+        "planner": {
+          "$ref": "#/$defs/PlannerScoring"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "version",
+        "waterTypes",
+        "structure",
+        "rating",
+        "planner"
+      ],
+      "title": "ScoringConfig",
+      "type": "object"
+    },
+    "ScoringRef": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "pattern": "^scoring/[0-9a-f]{12}\\.json$",
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "version"
+      ],
+      "title": "ScoringRef",
+      "type": "object"
+    },
+    "SignalId": {
+      "description": "Inputs to the pillar scores. Units are listed in docs/3x-framework.md.",
+      "enum": [
+        "tidalFlow",
+        "currentSpeed",
+        "waterTempAnomaly",
+        "lightLevel",
+        "windSpeed",
+        "waveHeight",
+        "dischargeRatio",
+        "structureCover",
+        "vegetationCover",
+        "waterDepth",
+        "nurseryHabitat",
+        "chlorophyll",
+        "tideMovement",
+        "lowLightFeeding",
+        "pressureTrend",
+        "solunar"
+      ],
+      "title": "SignalId",
+      "type": "string"
+    },
+    "Spot": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "locality": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Locality"
+        },
+        "coordinate": {
+          "$ref": "#/$defs/Coordinate"
+        },
+        "waterType": {
+          "$ref": "#/$defs/WaterType"
+        },
+        "accessDistanceM": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Walking distance from the nearest public road or path.",
+          "title": "Accessdistancem"
+        },
+        "depthM": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Depth below the tide datum.",
+          "title": "Depthm"
+        },
+        "depthSlope": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bottom slope near the spot, metres of depth per 100 m.",
+          "title": "Depthslope"
+        },
+        "features": {
+          "items": {
+            "$ref": "#/$defs/Feature"
+          },
+          "title": "Features",
+          "type": "array"
+        },
+        "habitat": {
+          "$ref": "#/$defs/Habitat"
+        },
+        "tideClusterId": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Id of the tide series in the same tile; tidal spots only.",
+          "title": "Tideclusterid"
+        },
+        "river": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/River"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "confidence": {
+          "description": "How much the underlying data can be trusted.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "sources": {
+          "description": "Attribution ids used for this spot.",
+          "items": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "coordinate",
+        "waterType",
+        "features",
+        "habitat",
+        "confidence",
+        "sources"
+      ],
+      "title": "Spot",
+      "type": "object"
+    },
+    "StructureScoring": {
+      "additionalProperties": false,
+      "properties": {
+        "radiusM": {
+          "description": "Features farther than this give no cover.",
+          "exclusiveMinimum": 0,
+          "title": "Radiusm",
+          "type": "number"
+        },
+        "kindWeights": {
+          "additionalProperties": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/FeatureKind"
+          },
+          "title": "Kindweights",
+          "type": "object"
+        }
+      },
+      "required": [
+        "radiusM",
+        "kindWeights"
+      ],
+      "title": "StructureScoring",
+      "type": "object"
+    },
+    "TideEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "time": {
+          "format": "date-time",
+          "title": "Time",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/TideEventKind"
+        },
+        "heightCm": {
+          "title": "Heightcm",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "time",
+        "kind",
+        "heightCm"
+      ],
+      "title": "TideEvent",
+      "type": "object"
+    },
+    "TideEventKind": {
+      "enum": [
+        "high",
+        "low"
+      ],
+      "title": "TideEventKind",
+      "type": "string"
+    },
+    "TideSeries": {
+      "additionalProperties": false,
+      "description": "Predicted tide heights shared by every spot in a tide cluster.",
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "model": {
+          "description": "Tide model used for the prediction, e.g. FES2022b.",
+          "title": "Model",
+          "type": "string"
+        },
+        "datum": {
+          "const": "MSL",
+          "title": "Datum",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        },
+        "stepMinutes": {
+          "exclusiveMinimum": 0,
+          "maximum": 60,
+          "title": "Stepminutes",
+          "type": "integer"
+        },
+        "heightsCm": {
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "title": "Heightscm",
+          "type": "array"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/TideEvent"
+          },
+          "title": "Events",
+          "type": "array"
+        },
+        "meanRangeCm": {
+          "description": "Mean high-to-low range over the series.",
+          "minimum": 0,
+          "title": "Meanrangecm",
+          "type": "number"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "validation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TideValidation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "model",
+        "datum",
+        "start",
+        "stepMinutes",
+        "heightsCm",
+        "events",
+        "meanRangeCm",
+        "confidence"
+      ],
+      "title": "TideSeries",
+      "type": "object"
+    },
+    "TideValidation": {
+      "additionalProperties": false,
+      "description": "How well the predicted series matched a real tide gauge.",
+      "properties": {
+        "stationId": {
+          "title": "Stationid",
+          "type": "string"
+        },
+        "stationName": {
+          "title": "Stationname",
+          "type": "string"
+        },
+        "rmseCm": {
+          "minimum": 0,
+          "title": "Rmsecm",
+          "type": "number"
+        },
+        "timingErrorMinutes": {
+          "minimum": 0,
+          "title": "Timingerrorminutes",
+          "type": "number"
+        }
+      },
+      "required": [
+        "stationId",
+        "stationName",
+        "rmseCm",
+        "timingErrorMinutes"
+      ],
+      "title": "TideValidation",
+      "type": "object"
+    },
+    "Tile": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "dataVersion": {
+          "pattern": "^[0-9a-z][0-9a-z.-]{0,39}$",
+          "title": "Dataversion",
+          "type": "string"
+        },
+        "geohash": {
+          "pattern": "^[0-9b-hjkmnp-z]{4}$",
+          "title": "Geohash",
+          "type": "string"
+        },
+        "generatedAt": {
+          "format": "date-time",
+          "title": "Generatedat",
+          "type": "string"
+        },
+        "spots": {
+          "items": {
+            "$ref": "#/$defs/Spot"
+          },
+          "title": "Spots",
+          "type": "array"
+        },
+        "tides": {
+          "items": {
+            "$ref": "#/$defs/TideSeries"
+          },
+          "title": "Tides",
+          "type": "array"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "dataVersion",
+        "geohash",
+        "generatedAt",
+        "spots",
+        "tides"
+      ],
+      "title": "Tile",
+      "type": "object"
+    },
+    "TileRef": {
+      "additionalProperties": false,
+      "properties": {
+        "geohash": {
+          "pattern": "^[0-9b-hjkmnp-z]{4}$",
+          "title": "Geohash",
+          "type": "string"
+        },
+        "path": {
+          "pattern": "^tiles/[0-9b-hjkmnp-z]{4}\\.[0-9a-f]{12}\\.json$",
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "spotCount": {
+          "minimum": 0,
+          "title": "Spotcount",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "geohash",
+        "path",
+        "sha256",
+        "spotCount"
+      ],
+      "title": "TileRef",
+      "type": "object"
+    },
+    "WaterType": {
+      "enum": [
+        "coastal",
+        "estuary",
+        "freshwater"
+      ],
+      "title": "WaterType",
+      "type": "string"
+    },
+    "WaterTypeScoring": {
+      "additionalProperties": false,
+      "properties": {
+        "comfort": {
+          "$ref": "#/$defs/PillarScoring"
+        },
+        "safety": {
+          "$ref": "#/$defs/PillarScoring"
+        },
+        "food": {
+          "$ref": "#/$defs/PillarScoring"
+        }
+      },
+      "required": [
+        "comfort",
+        "safety",
+        "food"
+      ],
+      "title": "WaterTypeScoring",
+      "type": "object"
+    },
+    "WaterTypes": {
+      "additionalProperties": false,
+      "properties": {
+        "coastal": {
+          "$ref": "#/$defs/WaterTypeScoring"
+        },
+        "estuary": {
+          "$ref": "#/$defs/WaterTypeScoring"
+        },
+        "freshwater": {
+          "$ref": "#/$defs/WaterTypeScoring"
+        }
+      },
+      "required": [
+        "coastal",
+        "estuary",
+        "freshwater"
+      ],
+      "title": "WaterTypes",
+      "type": "object"
+    }
+  },
+  "title": "ThreeX data contract v1",
+  "description": "Generated from pipeline/src/compiler/models.py; do not edit by hand. Documents validate against #/$defs/Manifest, #/$defs/Tile or #/$defs/ScoringConfig."
+}
