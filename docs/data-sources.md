@@ -31,6 +31,7 @@ Requests use **spot** coordinates (public) and never the user's own location, wh
 
 ## Rules
 
+- **Licences.** ThreeX's code is MIT, the published catalogue is ODbL 1.0, and the docs are CC BY 4.0 (see the README). Every source below must allow that.
 - **Physical features only from OSM.** Never use `leisure=fishing` or other catch/reporting tags. ThreeX does not rely on crowdsourced fishing reports.
 - **Exclude** `landuse=military`, `access=no|private`, port operational areas and protected areas (`boundary=protected_area`). Marine sanctuaries also get a manual exclusion list.
 - **ODbL share-alike.** The published catalogue is a database derived from OSM, so `threex-data` is published under **ODbL 1.0** with the OSM credit.

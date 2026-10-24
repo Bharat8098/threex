@@ -45,6 +45,12 @@ npm ci && npm run typecheck && npm test
 5. **M4, screens:** map, spot detail, best-times planner, about & data.
 6. **M5, expansion:** all of India.
 
-## Data credits
+## Licence
 
-Published catalogues are derived from OpenStreetMap (© OpenStreetMap contributors, ODbL) and other open datasets; see [docs/data-sources.md](docs/data-sources.md). ThreeX is not for navigation.
+| What | Licence |
+|---|---|
+| Code (this repository) | [MIT](LICENSE) |
+| Published spot catalogue (`threex-data`) | [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/), because it is derived from OpenStreetMap |
+| Documentation (`docs/`) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+
+Third-party datasets keep their own licences and credit lines; see [docs/data-sources.md](docs/data-sources.md). Published catalogues are derived from OpenStreetMap (© OpenStreetMap contributors) and other open datasets. ThreeX is not for navigation.
