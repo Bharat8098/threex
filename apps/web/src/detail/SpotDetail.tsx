@@ -122,11 +122,14 @@ function Conditions({ detail, coastal }: { detail: Detail; coastal: boolean }) {
       `${formatNumber(c.seaC, 1)} °C`,
       c.seaNormalC !== undefined ? strings.conditions.vsNormal(c.seaC - c.seaNormalC) : undefined,
     ]);
-  // Open-Meteo answers inland points from the nearest sea cell, so waves are shown only
-  // where the spot is on the open coast.
-  if (c.waveM !== undefined && coastal)
-    tiles.push([strings.conditions.waves, `${formatNumber(c.waveM, 1)} m`]);
-  if (c.currentMs !== undefined) tiles.push([strings.conditions.current, kmh(c.currentMs)]);
+  // Open-Meteo Marine answers inland points from the nearest sea cell, so waves and current
+  // are shown only where the spot is on the open coast: anywhere else they would describe
+  // the sea outside, not the water at the spot.
+  if (coastal) {
+    if (c.waveM !== undefined)
+      tiles.push([strings.conditions.waves, `${formatNumber(c.waveM, 1)} m`]);
+    if (c.currentMs !== undefined) tiles.push([strings.conditions.current, kmh(c.currentMs)]);
+  }
   if (c.dischargeCumecs !== undefined)
     tiles.push([
       strings.conditions.river,

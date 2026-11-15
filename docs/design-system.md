@@ -168,7 +168,7 @@ A page pushes with a short slide (a crossfade under Reduce Motion), and a back l
 4. **Today:** the next 24 hours: tide curve with highs and lows, night shaded, and the rating ribbon under it (green 3X, yellow 2X). Freshwater spots show only the ribbon.
 5. **This week:** seven ribbons, midnight to midnight, with a legend.
 6. **Best windows:** the top five, with tide and light.
-7. **Conditions now:** wind, cloud, air and water temperature (against the usual for the month), waves (coastal spots only: Open-Meteo answers inland points from the nearest sea cell), current, river flow (against its median).
+7. **Conditions now:** wind, cloud, air and water temperature (against the usual for the month), waves and current (coastal spots only: Open-Meteo Marine answers inland points from the nearest sea cell), river flow (against its median).
 8. **About this spot:** nearby structure and habitat with distances, depth, confidence, coordinates, and the data credits for this spot.
 9. The safety note.
 
